@@ -12,8 +12,4 @@ public enum Orientation {
 	 *  required methods to rotate
 	 */
 
-	NORTH,
-	EAST,
-	WEST,
-	SOUTH;
 }
