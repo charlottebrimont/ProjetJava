@@ -60,6 +60,8 @@ public class Main {
             if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");
             outputFile = cmd.getOptionValue( "o" );
 
+            //Faut gerer le nbcc !!
+            
             // generate grid and store it to outputFile...
             //...            
         }

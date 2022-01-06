@@ -1,8 +1,11 @@
 package fr.dauphine.JavaAvance.Solve;
 
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
+import fr.dauphine.JavaAvance.Components.Orientation;
 import fr.dauphine.JavaAvance.Components.Piece;
 import fr.dauphine.JavaAvance.Components.PieceType;
 import fr.dauphine.JavaAvance.GUI.Grid;
@@ -25,10 +28,98 @@ public class Generator {
 	 * @throws FileNotFoundException
 	 * @throws UnsupportedEncodingException
 	 */
-	public static void generateLevel(String fileName, Grid inputGrid) {
-      
-		// To be implemented
+	public static void generateLevel(String fileName, Grid inputGrid) {	//inputGrid a deja des pieces ? faut mettre le generated dans filled ? si oui a quoi sert input sauf pour les dimensions ?
+		ArrayList<PieceType> possibleTypes;
+		ArrayList<Orientation> possibleOrientations;
+		
+		//index 0 represent the upper piece
+		//index 1 represent the left piece
+		//we don't need the other because we initialize the grid from left to right and from up to down
+		boolean[] oppConns = new boolean[2];
+		
+		for (int i = 0; i < inputGrid.getHeight(); i++) {
+			for (int j = 0; j < inputGrid.getWidth(); j++) {
+				possibleTypes = new ArrayList<PieceType>();
+				possibleOrientations = new ArrayList<Orientation>();
+				
+				//we look the upper piece and the left piece to check wether there is connectors
+				if (i == 0) {
+					oppConns[0] = false;
+				}
+				else {
+					oppConns[0] = inputGrid.getPiece(i - 1, j).hasBottomConnector();
+				}
+				
+				if (j == 0) {
+					oppConns[j] = false;
+				}
+				else {
+					oppConns[1] = inputGrid.getPiece(i, j - 1).hasBottomConnector();
+				}
+				
+				//we add the types which match with the other pieces
+				if (oppConns[0]) {
+					if (oppConns[1]) {
+						possibleTypes.add(PieceType.TTYPE);
+						possibleTypes.add(PieceType.FOURCONN);
+						possibleTypes.add(PieceType.LTYPE);
+					}
+					
+					else {
+						possibleTypes.add(PieceType.ONECONN);
+						possibleTypes.add(PieceType.BAR);
+						possibleTypes.add(PieceType.TTYPE);
+						possibleTypes.add(PieceType.LTYPE);
+					}
+				}
+				
+				else {
+					if (oppConns[1]) {
+						possibleTypes.add(PieceType.ONECONN);
+						possibleTypes.add(PieceType.BAR);
+						possibleTypes.add(PieceType.TTYPE);
+						possibleTypes.add(PieceType.LTYPE);
+					}
+					
+					else {
+						possibleTypes.add(PieceType.VOID);
+						possibleTypes.add(PieceType.ONECONN);
+						possibleTypes.add(PieceType.LTYPE);
+					}
+				}
+				
+				//We select randomly one of the possible types
+				//We create the piece and set orientation to north
+				Random rd = new Random();
+				int rdInt = rd.nextInt(possibleTypes.size());
+				
+				Piece p = new Piece(i, j, possibleTypes.get(rdInt), Orientation.NORTH);
+				
+				//For each possible orientation we look wether it matchs with the other pieces
+				for (Orientation ori : p.getPossibleOrientations()) {
+					p.setOrientation(ori.getValue());
+
+					LinkedList<Orientation> conns = p.getConnectors();
+					boolean matchNorth = (conns.contains(Orientation.NORTH) && oppConns[0]) || (!conns.contains(Orientation.NORTH) && !oppConns[0]);
+					boolean matchWest = (conns.contains(Orientation.WEST) && oppConns[1]) || (!conns.contains(Orientation.WEST) && !oppConns[1]);
+					
+					if (matchNorth && matchWest) {
+						possibleOrientations.add(ori);
+					}
+				}
+				
+				//we select randomly one of the possible orientation 
+				rd = new Random();
+				rdInt = rd.nextInt(possibleOrientations.size());
+				
+				p.setOrientation(possibleOrientations.get(rdInt).getValue());
+			}
+		}
+		
+		mixGrid(inputGrid);
+		//mettre dans un fichier
 	}
+	
 	public static int[] copyGrid(Grid filledGrid, Grid inputGrid, int i, int j) {
 		Piece p;
 		int hmax = inputGrid.getHeight();
@@ -51,7 +142,7 @@ public class Generator {
 				// DEBUG System.out.println("x = " + x + " - y = " +
 				// y);System.out.println(p);
 				inputGrid.setPiece(x, y, new Piece(x, y, p.getType(), p.getOrientation()));
-				// DEBUG System.out.println("x = " + x + " - y = " +
+				// DEBUG System.0out.println("x = " + x + " - y = " +
 				// y);System.out.println(inputGrid.getPiece(x, y));
 				tmpj = y;
 			}
@@ -61,4 +152,16 @@ public class Generator {
 		return new int[] { tmpi, tmpj };
 	}
 
+	public static void mixGrid(Grid g) {
+		Piece p = g.getPiece(0, 0);
+		
+		while (p != null) {
+			Random rd = new Random();
+			int rdInt = rd.nextInt(4);
+			
+			for (int i = 0; i < rdInt; i++) {
+				p.turn();
+			}
+		}
+	}
 }

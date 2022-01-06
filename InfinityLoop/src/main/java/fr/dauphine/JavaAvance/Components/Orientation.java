@@ -99,4 +99,8 @@ public enum Orientation {
 	public Orientation getOpposedOrientation() {
 		return this.turn90().turn90();
 	}
+	
+	public int getValue() {
+		return value;
+	}
 }
