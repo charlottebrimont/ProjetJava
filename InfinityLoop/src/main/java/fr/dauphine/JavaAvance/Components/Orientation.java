@@ -21,8 +21,8 @@ public enum Orientation {
 		@Override
 		public int[] getOpposedPieceCoordinates(Piece p) {
 			int[] opp = new int[2];
-			opp[0] = p.getPosX() - 1;
-			opp[1] = p.getPosY();
+			opp[0] = p.getPosY() - 1; 
+			opp[1] = p.getPosX();
 			return opp;
 		}
 	},
@@ -36,8 +36,8 @@ public enum Orientation {
 		@Override
 		public int[] getOpposedPieceCoordinates(Piece p) {
 			int[] opp = new int[2];
-			opp[0] = p.getPosX();
-			opp[1] = p.getPosY() + 1;
+			opp[0] = p.getPosY();
+			opp[1] = p.getPosX() + 1;
 			return opp;
 		}
 	},
@@ -51,8 +51,8 @@ public enum Orientation {
 		@Override
 		public int[] getOpposedPieceCoordinates(Piece p) {
 			int[] opp = new int[2];
-			opp[0] = p.getPosX() + 1;
-			opp[1] = p.getPosY();
+			opp[0] = p.getPosY() + 1;
+			opp[1] = p.getPosX();
 			return opp;
 		}
 	},
@@ -66,8 +66,8 @@ public enum Orientation {
 		@Override
 		public int[] getOpposedPieceCoordinates(Piece p) {
 			int[] opp = new int[2];
-			opp[0] = p.getPosX();
-			opp[1] = p.getPosY() - 1;
+			opp[0] = p.getPosY();
+			opp[1] = p.getPosX() - 1;
 			return opp;
 		}
 	};
