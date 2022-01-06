@@ -17,23 +17,58 @@ public enum Orientation {
 		public Orientation turn90() {
 			return EAST;
 		}
+		
+		@Override
+		public int[] getOpposedPieceCoordinates(Piece p) {
+			int[] opp = new int[2];
+			opp[0] = p.getPosX() - 1;
+			opp[1] = p.getPosY();
+			return opp;
+		}
 	},
+	
 	EAST(1) {
 		@Override
 		public Orientation turn90() {
 			return SOUTH;
 		}
+		
+		@Override
+		public int[] getOpposedPieceCoordinates(Piece p) {
+			int[] opp = new int[2];
+			opp[0] = p.getPosX();
+			opp[1] = p.getPosY() + 1;
+			return opp;
+		}
 	},
+	
 	SOUTH(2) {
 		@Override
 		public Orientation turn90() {
 			return WEST;
 		}
+		
+		@Override
+		public int[] getOpposedPieceCoordinates(Piece p) {
+			int[] opp = new int[2];
+			opp[0] = p.getPosX() + 1;
+			opp[1] = p.getPosY();
+			return opp;
+		}
 	},
+	
 	WEST(3) {
 		@Override
 		public Orientation turn90() {
 			return NORTH;
+		}
+		
+		@Override
+		public int[] getOpposedPieceCoordinates(Piece p) {
+			int[] opp = new int[2];
+			opp[0] = p.getPosX();
+			opp[1] = p.getPosY() - 1;
+			return opp;
 		}
 	};
 	
@@ -44,6 +79,7 @@ public enum Orientation {
 	}
 	
 	abstract public Orientation turn90();
+	abstract public int[] getOpposedPieceCoordinates(Piece p);
 	
 	public static Orientation getOrifromValue(int val) {
 		switch(val) {
@@ -58,5 +94,9 @@ public enum Orientation {
 		default:
 			throw(new IllegalArgumentException("The value " + val + " isn't associated to any orientation !"));
 		}
+	}
+	
+	public Orientation getOpposedOrientation() {
+		return this.turn90().turn90();
 	}
 }

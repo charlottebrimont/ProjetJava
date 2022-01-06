@@ -192,4 +192,8 @@ public enum PieceType {
 			throw(new IllegalArgumentException("The value " + val + " isn't associated to any piece type !"));
 		}
 	}
+	
+	public int getNbConnectors() {
+		return nbConnectors;
+	}
 }
