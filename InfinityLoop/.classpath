@@ -36,5 +36,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/charl/OneDrive/Bureau/Charlotte/Dauphine/M1/S1/Java/Projet/commons-cli-1.5.0/commons-cli-1.5.0.jar"/>
+	<classpathentry kind="lib" path="/Users/sophiasirko/Downloads/commons-cli-1.5.0/commons-cli-1.5.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

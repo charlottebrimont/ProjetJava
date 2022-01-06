@@ -8,6 +8,15 @@ import fr.dauphine.JavaAvance.GUI.Grid;
 
 public class Checker {
 
-// To be implemented
+public boolean isSolution(Grid g) {
+	for (Piece[] ligne : g.getAllPieces()) {
+		for (Piece p : ligne) {
+			if (!g.isTotallyConnected(p)) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
 	
 }
