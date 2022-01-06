@@ -55,7 +55,7 @@ public class Piece {
 	}
 
 	public LinkedList<Orientation> getInvPossibleOrientation() {
-		LinkedList<Orientation> invPossibleOrientations = new LinkedList<>();
+		LinkedList<Orientation> invPossibleOrientations = new LinkedList<Orientation>();
 		for (Orientation ori : this.getPossibleOrientations()) {
 			invPossibleOrientations.addFirst(ori);
 		}
