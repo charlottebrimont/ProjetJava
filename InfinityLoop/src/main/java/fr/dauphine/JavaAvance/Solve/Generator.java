@@ -29,98 +29,81 @@ public class Generator {
 	 * @throws UnsupportedEncodingException
 	 */
 	public static void generateLevel(String fileName, Grid inputGrid) {	//inputGrid a deja des pieces ? faut mettre le generated dans filled ? si oui a quoi sert input sauf pour les dimensions ?
-		ArrayList<PieceType> possibleTypes;
-		ArrayList<Orientation> possibleOrientations;
-		
-		//index 0 represent the upper piece
-		//index 1 represent the left piece
-		//we don't need the other because we initialize the grid from left to right and from up to down
-		boolean[] oppConns = new boolean[2];
 		
 		for (int i = 0; i < inputGrid.getHeight(); i++) {
 			for (int j = 0; j < inputGrid.getWidth(); j++) {
-				possibleTypes = new ArrayList<PieceType>();
-				possibleOrientations = new ArrayList<Orientation>();
-				Piece p = new Piece(i, j);
 				
-				//we look the upper piece and the left piece to check wether there is connectors
-				if (i == 0) {
-					oppConns[0] = false;
-				}
-				else {
-					oppConns[0] = inputGrid.topNeighbor(p).hasBottomConnector();
-				}
-				
-				if (j == 0) {
-					oppConns[j] = false;
-				}
-				else {
-					oppConns[1] = inputGrid.leftNeighbor(p).hasBottomConnector();
-				}
-				
-				//we add the types which match with the other pieces
-				if (oppConns[0]) {
-					if (oppConns[1]) {
-						possibleTypes.add(PieceType.TTYPE);
-						possibleTypes.add(PieceType.FOURCONN);
-						possibleTypes.add(PieceType.LTYPE);
-					}
-					
-					else {
-						possibleTypes.add(PieceType.ONECONN);
-						possibleTypes.add(PieceType.BAR);
-						possibleTypes.add(PieceType.TTYPE);
-						possibleTypes.add(PieceType.LTYPE);
-					}
-				}
-				
-				else {
-					if (oppConns[1]) {
-						possibleTypes.add(PieceType.ONECONN);
-						possibleTypes.add(PieceType.BAR);
-						possibleTypes.add(PieceType.TTYPE);
-						possibleTypes.add(PieceType.LTYPE);
-					}
-					
-					else {
-						possibleTypes.add(PieceType.VOID);
-						possibleTypes.add(PieceType.ONECONN);
-						possibleTypes.add(PieceType.LTYPE);
-					}
-				}
-				
-				//We select randomly one of the possible types
-				//We create the piece and set orientation to north
-				Random rd = new Random();
-				int rdInt = rd.nextInt(possibleTypes.size());
-				
-				p.setType(possibleTypes.get(rdInt));
-				p.setOrientation((Orientation.NORTH).getValue());
-				
-				//For each possible orientation we look wether it matchs with the other pieces
-				for (Orientation ori : p.getPossibleOrientations()) {
-					p.setOrientation(ori.getValue());
-
-					LinkedList<Orientation> conns = p.getConnectors();
-					boolean matchNorth = (conns.contains(Orientation.NORTH) && oppConns[0]) || (!conns.contains(Orientation.NORTH) && !oppConns[0]);
-					boolean matchWest = (conns.contains(Orientation.WEST) && oppConns[1]) || (!conns.contains(Orientation.WEST) && !oppConns[1]);
-					
-					if (matchNorth && matchWest) {
-						possibleOrientations.add(ori);
-					}
-				}
-				
-				//we select randomly one of the possible orientation 
-				rd = new Random();
-				rdInt = rd.nextInt(possibleOrientations.size());
-				
-				p.setOrientation(possibleOrientations.get(rdInt).getValue());
-				p.setFixed(true);
 			}
 		}
 		
 		mixGrid(inputGrid);
 		//mettre dans un fichier (nom fileName passer en argument)
+	}
+	
+	public static void generatecc(Grid ccGrid){
+		ArrayList<Piece> path = new ArrayList<Piece>();
+		
+		path.add(new Piece(0, 0));
+	}
+	
+	public static Piece generatePiece(Grid g, Piece p){
+		int nbFixedNeighbours = g.nbFixedPiecesAround(p);
+		ArrayList<Orientation> fixedConns = g.listFixedConnsAround(p);
+		
+		//We set the list of types that have a number of connectors compatible
+		ArrayList<PieceType> possibleTypes = new ArrayList<PieceType>();
+		for (int i = 0; i < 6; i++) {
+			int nbConns = PieceType.getTypefromValue(i).getNbConnectors();
+			if (nbConns >= fixedConns.size() && nbConns <= 4 - (nbFixedNeighbours - fixedConns.size())) {
+				possibleTypes.add(PieceType.getTypefromValue(i));
+			}
+		}
+		
+		//We supress the types that are not compatible with the configuration
+		for (PieceType pt : possibleTypes) {
+			p.setType(pt);
+			boolean validType = false;
+			for (Orientation ori : p.getPossibleOrientations()) {
+				p.setOrientation(ori.getValue());
+				if (g.isTotallyConnectedToFixed(p)) {
+					validType = true;
+				}
+			}
+			
+			if (!validType) {
+				possibleTypes.remove(pt);
+			}
+		}
+		
+		//We select randomly one of the possible types
+		//We set the type to the random one and the orientation to north
+		Random rd = new Random();
+		int rdInt = rd.nextInt(possibleTypes.size());
+		
+		p.setType(possibleTypes.get(rdInt));
+		p.setOrientation((Orientation.NORTH).getValue());
+		
+		//We create a list of all the possible orientation for the random type
+		//We supress the orientations that are not compatible with the fixed pieces around
+		ArrayList<Orientation> possibleOrientations = p.getPossibleOrientations();
+		
+		//For each possible orientation we look wether it matchs with the other pieces
+		for (Orientation ori : possibleOrientations) {
+			p.setOrientation(ori.getValue());
+			
+			if (!g.isTotallyConnectedToFixed(p)) {
+				possibleOrientations.remove(ori);
+			}
+		}
+		
+		//We select randomly an orientation
+		rd = new Random();
+		rdInt = rd.nextInt(possibleOrientations.size());
+		
+		p.setOrientation(possibleOrientations.get(rdInt).getValue());
+		p.setFixed(true);
+		
+		return p;
 	}
 	
 	public static int[] copyGrid(Grid filledGrid, Grid inputGrid, int i, int j) {

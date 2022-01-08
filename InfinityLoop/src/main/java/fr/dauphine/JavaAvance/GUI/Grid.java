@@ -258,6 +258,56 @@ public class Grid {
 	}
 
 	/**
+	 * this function returns the number of pieces that are fixed around p
+	 * 
+	 * @param p
+	 * @returns the number of pieces that are fixed around p
+	 */
+	public int nbFixedPiecesAround(Piece p) {
+		int nb = 0;
+		
+		if (topPiece(p) == null || topPiece(p).isFixed()) {
+			nb++;
+		}
+		if (rightPiece(p) == null || rightPiece(p).isFixed()) {
+			nb++;
+		}
+		if (bottomPiece(p) == null || bottomPiece(p).isFixed()) {
+			nb++;
+		}
+		if (leftPiece(p) == null || leftPiece(p).isFixed()) {
+			nb++;
+		}
+		
+		return nb;
+	}
+	
+	/**
+	 * this function returns the list of orientation where there is a connector of a fixed piece
+	 * 
+	 * @param p
+	 * @returns the list of orientation with a fixed connector endnig in p
+	 */
+	public ArrayList<Orientation> listFixedConnsAround(Piece p) {
+		ArrayList<Orientation> l = new ArrayList<Orientation>();
+
+		if (topPiece(p) != null && topPiece(p).isFixed() && topPiece(p).hasBottomConnector()) {
+			l.add(Orientation.NORTH);
+		}
+		if (rightPiece(p) != null && rightPiece(p).isFixed() && rightPiece(p).hasLeftConnector()) {
+			l.add(Orientation.EAST);
+		}
+		if (bottomPiece(p) != null && bottomPiece(p).isFixed() && bottomPiece(p).hasTopConnector()) {
+			l.add(Orientation.SOUTH);
+		}
+		if (leftPiece(p) != null && leftPiece(p).isFixed() && leftPiece(p).hasRightConnector()) {
+			l.add(Orientation.WEST);
+		}
+		
+		return l;
+	}
+	
+	/**
 	 * this function returns the number of fixed neighbors
 	 * 
 	 * @param p
@@ -386,6 +436,52 @@ public class Grid {
 		if (p.getType() != PieceType.VOID) {
 			for (Orientation connector : p.getConnectors()) {
 				if (!this.isConnected(p, connector)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Check if a piece is connected to the fixed pieces around
+	 * 
+	 * @param line
+	 * @param column
+	 * @return true if a connector of a piece is connected to a fixed pieces around
+	 */
+	public boolean isConnectedToFixed(Piece p, Orientation ori) {
+		int oppPieceY = ori.getOpposedPieceCoordinates(p)[0];// i
+		int oppPieceX = ori.getOpposedPieceCoordinates(p)[1];// j
+		if (p.getType() == PieceType.VOID)
+			return true;
+		try {
+			Piece oppPiece = this.getPiece(oppPieceY, oppPieceX);
+			if (!oppPiece.isFixed()) {
+				return true;
+			}
+			for (Orientation oppConnector : oppPiece.getConnectors()) {
+				if (oppConnector == ori.getOpposedOrientation()) {
+					return true;
+				}
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return false;
+		}
+		return false;
+	}
+	
+	/**
+	 * Check if a piece is totally connected to the fixed pieces around
+	 * 
+	 * @param line
+	 * @param column
+	 * @return true if a connector of a piece is connected
+	 */
+	public boolean isTotallyConnectedToFixed(Piece p) {
+		if (p.getType() != PieceType.VOID) {
+			for (Orientation connector : p.getConnectors()) {
+				if (!this.isConnectedToFixed(p, connector)) {
 					return false;
 				}
 			}
@@ -539,6 +635,34 @@ public class Grid {
 		return null;
 	}
 
+	public Piece leftPiece(Piece p) {
+		if (p.getPosX() == 0) {
+			return null;
+		}
+		return this.getPiece(p.getPosY(), p.getPosX() - 1);
+	}
+	
+	public Piece topPiece(Piece p) {
+		if (p.getPosY() == 0) {
+			return null;
+		}
+		return this.getPiece(p.getPosY() - 1, p.getPosX());
+	}
+	
+	public Piece rightPiece(Piece p) {
+		if (p.getPosX() == width) {
+			return null;
+		}
+		return this.getPiece(p.getPosY(), p.getPosX() + 1);
+	}
+	
+	public Piece bottomPiece(Piece p) {
+		if (p.getPosY() == height) {
+			return null;
+		}
+		return this.getPiece(p.getPosY() + 1, p.getPosX());
+	}
+	
 	@Override
 	public String toString() {
 

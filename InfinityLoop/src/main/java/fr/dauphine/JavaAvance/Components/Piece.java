@@ -166,5 +166,4 @@ public class Piece {
 		s += " Orientation / " + this.getOrientation();
 		return s;
 	}
-
 }
