@@ -1,5 +1,6 @@
 package fr.dauphine.JavaAvance.Main;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.apache.commons.cli.CommandLine;
@@ -28,7 +29,7 @@ public class Main {
 	private static Integer nbThread = 1;
 	private static Integer algo = 2;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		Options options = new Options();
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = null;
@@ -82,6 +83,8 @@ public class Main {
             System.out.println("Running phineloop checker.");
             inputFile = cmd.getOptionValue( "c" );
             boolean solved = false; 
+            Grid g = new Grid(inputFile);
+            solved = Checker.isSolution(g);
             
             // load grid from inputFile and check if it is solved... 
             //...
