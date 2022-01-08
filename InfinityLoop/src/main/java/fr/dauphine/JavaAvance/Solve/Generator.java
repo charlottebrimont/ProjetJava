@@ -41,20 +41,21 @@ public class Generator {
 			for (int j = 0; j < inputGrid.getWidth(); j++) {
 				possibleTypes = new ArrayList<PieceType>();
 				possibleOrientations = new ArrayList<Orientation>();
+				Piece p = new Piece(i, j);
 				
 				//we look the upper piece and the left piece to check wether there is connectors
 				if (i == 0) {
 					oppConns[0] = false;
 				}
 				else {
-					oppConns[0] = inputGrid.getPiece(i - 1, j).hasBottomConnector();
+					oppConns[0] = inputGrid.topNeighbor(p).hasBottomConnector();
 				}
 				
 				if (j == 0) {
 					oppConns[j] = false;
 				}
 				else {
-					oppConns[1] = inputGrid.getPiece(i, j - 1).hasBottomConnector();
+					oppConns[1] = inputGrid.leftNeighbor(p).hasBottomConnector();
 				}
 				
 				//we add the types which match with the other pieces
@@ -93,7 +94,8 @@ public class Generator {
 				Random rd = new Random();
 				int rdInt = rd.nextInt(possibleTypes.size());
 				
-				Piece p = new Piece(i, j, possibleTypes.get(rdInt), Orientation.NORTH);
+				p.setType(possibleTypes.get(rdInt));
+				p.setOrientation((Orientation.NORTH).getValue());
 				
 				//For each possible orientation we look wether it matchs with the other pieces
 				for (Orientation ori : p.getPossibleOrientations()) {
@@ -113,6 +115,7 @@ public class Generator {
 				rdInt = rd.nextInt(possibleOrientations.size());
 				
 				p.setOrientation(possibleOrientations.get(rdInt).getValue());
+				p.setFixed(true);
 			}
 		}
 		
