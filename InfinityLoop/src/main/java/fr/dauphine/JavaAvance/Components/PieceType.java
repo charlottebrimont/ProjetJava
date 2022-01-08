@@ -61,9 +61,7 @@ public enum PieceType {
 			if (o == Orientation.NORTH || o == Orientation.SOUTH) {
 				return Orientation.NORTH;
 			}
-			if (o == Orientation.WEST || o == Orientation.EAST) {
-				return Orientation.EAST;
-			}
+			return Orientation.EAST;
 		}
 		
 		@Override
