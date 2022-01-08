@@ -15,10 +15,7 @@ public enum PieceType {
 	VOID(0, 0) {
 		@Override
 		public Orientation getOrientation(Orientation o) {
-			if (o == Orientation.NORTH) {
-				return o;
-			}
-			throw (new IllegalArgumentException("This piece can't have this orientation !"));
+			return Orientation.NORTH;
 		}
 		
 		@Override
@@ -61,10 +58,12 @@ public enum PieceType {
 	BAR(2, 2) {
 		@Override
 		public Orientation getOrientation(Orientation o) {
-			if (o == Orientation.NORTH || o == Orientation.EAST) {
-				return o;
+			if (o == Orientation.NORTH || o == Orientation.SOUTH) {
+				return Orientation.NORTH;
 			}
-			throw (new IllegalArgumentException("This piece can't have this orientation !"));
+			if (o == Orientation.WEST || o == Orientation.EAST) {
+				return Orientation.EAST;
+			}
 		}
 		
 		@Override
@@ -113,10 +112,7 @@ public enum PieceType {
 	FOURCONN(4, 4) {
 		@Override
 		public Orientation getOrientation(Orientation o) {
-			if (o == Orientation.NORTH) {
-				return o;
-			}
-			throw (new IllegalArgumentException("This piece can't have this orientation !"));
+			return Orientation.NORTH;
 		}
 		
 		@Override
