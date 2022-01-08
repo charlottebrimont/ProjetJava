@@ -36,34 +36,91 @@ public class Generator {
 			generateRandomLevel();
 		}
 		else {
-			generateCCLevel();
+			for (int cpt = 0; cpt <= filledGrid.getNbcc(); cpt++) {
+				generateCC();
+			}
+			//faire le remplissage de void après?
+			//c'est automatique ?
 		}
+
 		
 		mixGrid(filledGrid);
 		filledGrid.writeGridFile(fileName);
 	}
 	
 	public static void generateRandomLevel() {
-		for (int i = 0; i < filledGrid.getHeight(); i++) {
-			for (int j = 0; j < filledGrid.getWidth(); j++) {
+		Piece cur = filledGrid.getPiece(0, 0);
+		
+		while (cur != null) {
+			generatePiece(cur);
+			cur = filledGrid.getNextPiece(cur);
+		}
+	}
+	
+	public static void generateCC(){
+		ArrayList<Piece> cc = new ArrayList<Piece>();
+		ArrayList<Piece> waiting = new ArrayList<Piece>();
+		Piece start = filledGrid.getAllPieces()[0][0];
+		while (!start.isFixed()) {
+			start = filledGrid.getNextPiece(start);
+		}
+		waiting.add(start);
+		
+		while (waiting.size() != 0) {
+			Piece cur = waiting.get(0);
+			
+			generatePiece(cur);
+			cc.add(cur);
+			
+			//Faire le truc de chemin puis completer le reste pour finir le cc
+						
+			
+			//We check that the first Piece isn't void to avoid counting a void piece as a connexe component
+			//If it's a void we take the next Piece
+			if (cc.size() == 1 && cur.getType() == PieceType.VOID) {
+				cc.remove(cur);
 				
+				start = filledGrid.getNextPiece(start);
+				while (!start.isFixed()) {
+					start = filledGrid.getNextPiece(start);
+				}
+				
+				waiting.add(start);
+			}
+			
+			//We remove the current piece from the waiting list
+			waiting.remove(cur);
+			
+			//We update the waiting list by adding the neighbours that aren't fixed and that aren't already in the waiting list
+			for (Orientation ori : cur.getConnectors()) {
+				Piece oriP;
+				switch (ori) {
+				case NORTH:
+					oriP = filledGrid.topPiece(cur);
+					break;
+				case EAST:
+					oriP = filledGrid.rightPiece(cur);
+					break;
+				case SOUTH:
+					oriP = filledGrid.bottomPiece(cur);
+					break;
+				case WEST:
+					oriP = filledGrid.leftPiece(cur);
+					break;
+				default :
+					oriP = null;
+				}
+					
+				if (!oriP.isFixed() && !waiting.contains(oriP)) {
+					waiting.add(oriP);
+				}
 			}
 		}
 	}
 	
-	public static void generateCCLevel() {
-		
-	}
-	
-	public static void generateCC(Grid ccGrid){
-		ArrayList<Piece> path = new ArrayList<Piece>();
-		
-		path.add(new Piece(0, 0));
-	}
-	
-	public static Piece generatePiece(Grid g, Piece p){
-		int nbFixedNeighbours = g.nbFixedPiecesAround(p);
-		ArrayList<Orientation> fixedConns = g.listFixedConnsAround(p);
+	public static void generatePiece(Piece p){
+		int nbFixedNeighbours = filledGrid.nbFixedPiecesAround(p);
+		ArrayList<Orientation> fixedConns = filledGrid.listFixedConnsAround(p);
 		
 		//We set the list of types that have a number of connectors compatible
 		ArrayList<PieceType> possibleTypes = new ArrayList<PieceType>();
@@ -80,7 +137,7 @@ public class Generator {
 			boolean validType = false;
 			for (Orientation ori : p.getPossibleOrientations()) {
 				p.setOrientation(ori.getValue());
-				if (g.isTotallyConnectedToFixed(p)) {
+				if (filledGrid.isTotallyConnectedToFixed(p)) {
 					validType = true;
 				}
 			}
@@ -106,7 +163,7 @@ public class Generator {
 		for (Orientation ori : possibleOrientations) {
 			p.setOrientation(ori.getValue());
 			
-			if (!g.isTotallyConnectedToFixed(p)) {
+			if (!filledGrid.isTotallyConnectedToFixed(p)) {
 				possibleOrientations.remove(ori);
 			}
 		}
@@ -117,8 +174,6 @@ public class Generator {
 		
 		p.setOrientation(possibleOrientations.get(rdInt).getValue());
 		p.setFixed(true);
-		
-		return p;
 	}
 	
 	public static int[] copyGrid(Grid filledGrid, Grid inputGrid, int i, int j) {
