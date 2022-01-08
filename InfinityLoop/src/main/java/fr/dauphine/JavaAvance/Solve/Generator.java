@@ -28,19 +28,34 @@ public class Generator {
 	 * @throws FileNotFoundException
 	 * @throws UnsupportedEncodingException
 	 */
-	public static void generateLevel(String fileName, Grid inputGrid) {	//inputGrid a deja des pieces ? faut mettre le generated dans filled ? si oui a quoi sert input sauf pour les dimensions ?
+	public static void generateLevel(String fileName, Grid inputGrid) {
+		//We initialize filledGrid with the size of inputGrid
+		filledGrid = new Grid(inputGrid.getWidth(), inputGrid.getHeight(), inputGrid.getNbcc());
 		
-		for (int i = 0; i < inputGrid.getHeight(); i++) {
-			for (int j = 0; j < inputGrid.getWidth(); j++) {
+		if (filledGrid.getNbcc() == -1) {
+			generateRandomLevel();
+		}
+		else {
+			generateCCLevel();
+		}
+		
+		mixGrid(filledGrid);
+		filledGrid.writeGridFile(fileName);
+	}
+	
+	public static void generateRandomLevel() {
+		for (int i = 0; i < filledGrid.getHeight(); i++) {
+			for (int j = 0; j < filledGrid.getWidth(); j++) {
 				
 			}
 		}
-		
-		mixGrid(inputGrid);
-		//mettre dans un fichier (nom fileName passer en argument)
 	}
 	
-	public static void generatecc(Grid ccGrid){
+	public static void generateCCLevel() {
+		
+	}
+	
+	public static void generateCC(Grid ccGrid){
 		ArrayList<Piece> path = new ArrayList<Piece>();
 		
 		path.add(new Piece(0, 0));

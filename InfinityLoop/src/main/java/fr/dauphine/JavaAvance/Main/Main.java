@@ -59,12 +59,15 @@ public class Main {
             width = Integer.parseInt(gridformat[0]);
             height = Integer.parseInt(gridformat[1]); 
             if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");
-            outputFile = cmd.getOptionValue( "o" );
-
-            //Faut gerer le nbcc !!
             
-            // generate grid and store it to outputFile...
-            //...            
+            outputFile = cmd.getOptionValue( "o" );
+            Grid inputGrid = new Grid(height, width);
+            if (cmd.hasOption("x")) {
+            	String nbccstr = cmd.getOptionValue("x");
+            	inputGrid.setNbcc(Integer.parseInt(nbccstr));
+            }
+
+            Generator.generateLevel(outputFile, inputGrid);         
         }
         else if( cmd.hasOption( "s" ) ) {
             System.out.println("Running phineloop solver.");
