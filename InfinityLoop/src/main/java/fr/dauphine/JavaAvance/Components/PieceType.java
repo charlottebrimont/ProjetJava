@@ -192,4 +192,10 @@ public enum PieceType {
 	public int getNbConnectors() {
 		return nbConnectors;
 	}
+
+	public int getValue() {
+		return value;
+	}
+	
+	
 }
