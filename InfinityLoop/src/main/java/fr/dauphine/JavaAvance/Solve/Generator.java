@@ -120,7 +120,7 @@ public class Generator {
 		}
 		
 		mixGrid(inputGrid);
-		//mettre dans un fichier
+		//mettre dans un fichier (nom fileName passer en argument)
 	}
 	
 	public static int[] copyGrid(Grid filledGrid, Grid inputGrid, int i, int j) {
