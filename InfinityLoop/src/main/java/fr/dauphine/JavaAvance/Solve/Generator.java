@@ -19,6 +19,11 @@ public class Generator {
 
 	private static Grid filledGrid;
 
+	public static void main(String[] args) {
+		Grid inputGrid = new Grid(5, 7, 3);
+		generateLevel("test2.txt", inputGrid);
+	}
+	
 	/**
 	 * @param output
 	 *            file name
@@ -36,15 +41,19 @@ public class Generator {
 			generateRandomLevel();
 		}
 		else {
-			for (int cpt = 0; cpt <= filledGrid.getNbcc(); cpt++) {
+			for (int cpt = 0; cpt < filledGrid.getNbcc(); cpt++) {
 				generateCC();
 			}
-			//faire le remplissage de void après?
-			//c'est automatique ?
 		}
 
+		for (int i = 0; i < filledGrid.getHeight(); i++) {
+			for (int j = 0; j < filledGrid.getWidth(); j++) {
+				Piece p = filledGrid.getPiece(i, j);;
+				System.out.println(p);
+			}
+		}
 		
-		mixGrid(filledGrid);
+		//mixGrid(filledGrid);
 		filledGrid.writeGridFile(fileName);
 	}
 	
@@ -60,9 +69,12 @@ public class Generator {
 	public static void generateCC(){
 		ArrayList<Piece> cc = new ArrayList<Piece>();
 		ArrayList<Piece> waiting = new ArrayList<Piece>();
-		Piece start = filledGrid.getAllPieces()[0][0];
-		while (!start.isFixed()) {
+		Piece start = filledGrid.getPiece(0, 0);
+		while (start.isFixed() && filledGrid.getNextPiece(start) != null) {
 			start = filledGrid.getNextPiece(start);
+		}
+		if (filledGrid.getNextPiece(start) == null) {
+			return;
 		}
 		waiting.add(start);
 		
@@ -70,19 +82,18 @@ public class Generator {
 			Piece cur = waiting.get(0);
 			
 			generatePiece(cur);
-			cc.add(cur);
+			cc.add(cur);						
 			
-			//Faire le truc de chemin puis completer le reste pour finir le cc
-						
-			
-			//We check that the first Piece isn't void to avoid counting a void piece as a connexe component
+			//We check that the first piece isn't void to avoid counting a void piece as a connexe component
 			//If it's a void we take the next Piece
-			if (cc.size() == 1 && cur.getType() == PieceType.VOID) {
+			if (cur.getType() == PieceType.VOID) {
 				cc.remove(cur);
 				
-				start = filledGrid.getNextPiece(start);
-				while (!start.isFixed()) {
+				while (start.isFixed() && filledGrid.getNextPiece(start) != null) {
 					start = filledGrid.getNextPiece(start);
+				}
+				if (filledGrid.getNextPiece(start) == null) {
+					return;
 				}
 				
 				waiting.add(start);
@@ -91,7 +102,7 @@ public class Generator {
 			//We remove the current piece from the waiting list
 			waiting.remove(cur);
 			
-			//We update the waiting list by adding the neighbours that aren't fixed and that aren't already in the waiting list
+			//We update the waiting list by adding the neighbors that aren't fixed and that aren't already in the waiting list
 			for (Orientation ori : cur.getConnectors()) {
 				Piece oriP;
 				switch (ori) {
@@ -111,7 +122,7 @@ public class Generator {
 					oriP = null;
 				}
 					
-				if (!oriP.isFixed() && !waiting.contains(oriP)) {
+				if (!oriP.isFixed() && !waiting.contains(oriP) && !cc.contains(oriP)) {
 					waiting.add(oriP);
 				}
 			}
@@ -131,20 +142,26 @@ public class Generator {
 			}
 		}
 		
-		//We supress the types that are not compatible with the configuration
+		//We suppress the types that are not compatible with the configuration
+		ArrayList<PieceType> toSuppress = new ArrayList<PieceType>();
+		
 		for (PieceType pt : possibleTypes) {
 			p.setType(pt);
 			boolean validType = false;
 			for (Orientation ori : p.getPossibleOrientations()) {
 				p.setOrientation(ori.getValue());
-				if (filledGrid.isTotallyConnectedToFixed(p)) {
+				if (filledGrid.oriTotallyConnectedToFixed(p).size() != 0) {
 					validType = true;
 				}
 			}
 			
 			if (!validType) {
-				possibleTypes.remove(pt);
+				toSuppress.add(pt);
 			}
+		} 
+		
+		for (PieceType pt : toSuppress) {
+			possibleTypes.remove(pt);
 		}
 		
 		//We select randomly one of the possible types
@@ -156,23 +173,15 @@ public class Generator {
 		p.setOrientation((Orientation.NORTH).getValue());
 		
 		//We create a list of all the possible orientation for the random type
-		//We supress the orientations that are not compatible with the fixed pieces around
-		ArrayList<Orientation> possibleOrientations = p.getPossibleOrientations();
-		
-		//For each possible orientation we look wether it matchs with the other pieces
-		for (Orientation ori : possibleOrientations) {
-			p.setOrientation(ori.getValue());
-			
-			if (!filledGrid.isTotallyConnectedToFixed(p)) {
-				possibleOrientations.remove(ori);
-			}
-		}
-		
+		//We use the function to give us only the orientations that matches with all the fixed neighbours
+		ArrayList<Orientation> possibleOrientations = filledGrid.oriTotallyConnectedToFixed(p);
+				
 		//We select randomly an orientation
 		rd = new Random();
 		rdInt = rd.nextInt(possibleOrientations.size());
 		
 		p.setOrientation(possibleOrientations.get(rdInt).getValue());
+		
 		p.setFixed(true);
 	}
 	
