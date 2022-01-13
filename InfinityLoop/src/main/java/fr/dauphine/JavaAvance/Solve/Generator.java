@@ -18,11 +18,6 @@ import fr.dauphine.JavaAvance.GUI.Grid;
 public class Generator {
 
 	private static Grid filledGrid;
-
-	public static void main(String[] args) {
-		Grid inputGrid = new Grid(5, 7, 3);
-		generateLevel("test2.txt", inputGrid);
-	}
 	
 	/**
 	 * @param output
@@ -45,15 +40,8 @@ public class Generator {
 				generateCC();
 			}
 		}
-
-		for (int i = 0; i < filledGrid.getHeight(); i++) {
-			for (int j = 0; j < filledGrid.getWidth(); j++) {
-				Piece p = filledGrid.getPiece(i, j);;
-				System.out.println(p);
-			}
-		}
 		
-		//mixGrid(filledGrid);
+		mixGrid(filledGrid);
 		filledGrid.writeGridFile(fileName);
 	}
 	

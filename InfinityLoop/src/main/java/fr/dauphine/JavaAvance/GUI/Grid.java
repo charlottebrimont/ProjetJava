@@ -749,20 +749,17 @@ public class Grid {
 	
 	public void writeGridFile (String file) {
 		try {
-			FileWriter myWriter = new FileWriter(file);
-			myWriter.write("" + width +"\n" + height + "\n");
-			Piece[][] piece = this.getAllPieces();
-			for (int i = 0; i < piece.length; i++) {
-				//Piece[] ligne = piece[i];
-				for (int j = 0; j < piece[0].length; j++) {
-					Piece p = piece[i][j];
-					myWriter.write(p.getType().getValue() + "x" + p.getOrientation().getValue() +"\n" );
+		      FileWriter myWriter = new FileWriter(file);
+		      myWriter.write("" + width +"\n" + height + "\n");
+		      for (Piece[] ligne : this.getAllPieces()) {
+					for (Piece p : ligne) {
+						myWriter.write(p.getType().getValue() + "x" + p.getOrientation().getValue() +"\n" );
+					}
 				}
-			}
-			myWriter.close();
-		} catch (IOException e) {
-			System.out.println("An error occurred.");
-			e.printStackTrace();
-		}
+		      myWriter.close();
+		    } catch (IOException e) {
+		      System.out.println("An error occurred.");
+		      e.printStackTrace();
+		    }
 	}
 }
