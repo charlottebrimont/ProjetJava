@@ -1,7 +1,5 @@
 package fr.dauphine.JavaAvance.Components;
 
-import java.util.HashMap;
-
 /**
  * 
  * Orientation of the piece enum

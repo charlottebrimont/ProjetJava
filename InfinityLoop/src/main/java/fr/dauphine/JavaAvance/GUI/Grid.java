@@ -22,46 +22,60 @@ public class Grid {
 	private int nbcc = -1;
 	private Piece[][] pieces;
 	
-	//constructeur pour lire la gride d'un fichier 
+	//constructeur pour lire la grid d'un fichier 
 	public Grid(String str) throws FileNotFoundException {
 		File file = new File(str);
 	    Scanner sc = new Scanner(file);
+	    
 	    String w = sc.next();
 	    width = Integer.parseInt(w);
 	    String h = sc.next();
 	    height = Integer.parseInt(h);
+	    
 	    pieces = new Piece[height][width];
 	    int i = 0;
 	    int j = 0;
+
 	    while (sc.hasNextLine()) {
 	    	String ligne = sc.next();
-	    	String[] ligneL =ligne.split("x");
-	    	int pieceType = Integer.parseInt(ligneL[0]);
-	    	int pieceOri = Integer.parseInt(ligneL[1]);
-	    	Piece p = new Piece(i, j, pieceType, pieceOri);
-	    	this.setPiece(i, j, p);
-	    	if (j<width) {
-	    		j++;
-	    	}
-	    	if (j == width) {
-	    		i++;
-	    		j = 0;
-	    	}	
-	  }
+		   	String[] ligneL = ligne.split("x");
+		   	int pieceType = Integer.parseInt(ligneL[0]);
+		   	int pieceOri = Integer.parseInt(ligneL[1]);
+		   	Piece p = new Piece(i, j, pieceType, pieceOri);
+		   	this.setPiece(i, j, p);
+		   	if (j<width) {
+		   		j++;
+		   	}
+		   	if (j == width) {
+		   		i++;
+		   		j = 0;
+		   	}
+	    }
+	    
+	    sc.close();
 	}
 
 	public Grid(int width, int height) {
 		this.width = width;
 		this.height = height;
-		pieces = new Piece[height][width];
+		initPieces();
 	}
-
+	
 	// Constructor with specified number of connected component
 	public Grid(int width, int height, int nbcc) {
 		this.width = width;
 		this.height = height;
 		this.nbcc = nbcc;
-		pieces = new Piece[height][width];
+		initPieces();
+	}
+	
+	public void initPieces() {
+		this.pieces = new Piece[height][width];
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				this.setPiece(i, j, new Piece(i, j));
+			}
+		}
 	}
 
 	public int getWidth() {
@@ -290,6 +304,56 @@ public class Grid {
 	}
 
 	/**
+	 * this function returns the number of pieces that are fixed around p
+	 * 
+	 * @param p
+	 * @returns the number of pieces that are fixed around p
+	 */
+	public int nbFixedPiecesAround(Piece p) {
+		int nb = 0;
+		
+		if (topPiece(p) == null || topPiece(p).isFixed()) {
+			nb++;
+		}
+		if (rightPiece(p) == null || rightPiece(p).isFixed()) {
+			nb++;
+		}
+		if (bottomPiece(p) == null || bottomPiece(p).isFixed()) {
+			nb++;
+		}
+		if (leftPiece(p) == null || leftPiece(p).isFixed()) {
+			nb++;
+		}
+		
+		return nb;
+	}
+	
+	/**
+	 * this function returns the list of orientation where there is a connector of a fixed piece
+	 * 
+	 * @param p
+	 * @returns the list of orientation with a fixed connector endnig in p
+	 */
+	public ArrayList<Orientation> listFixedConnsAround(Piece p) {
+		ArrayList<Orientation> l = new ArrayList<Orientation>();
+
+		if (topPiece(p) != null && topPiece(p).isFixed() && topPiece(p).hasBottomConnector()) {
+			l.add(Orientation.NORTH);
+		}
+		if (rightPiece(p) != null && rightPiece(p).isFixed() && rightPiece(p).hasLeftConnector()) {
+			l.add(Orientation.EAST);
+		}
+		if (bottomPiece(p) != null && bottomPiece(p).isFixed() && bottomPiece(p).hasTopConnector()) {
+			l.add(Orientation.SOUTH);
+		}
+		if (leftPiece(p) != null && leftPiece(p).isFixed() && leftPiece(p).hasRightConnector()) {
+			l.add(Orientation.WEST);
+		}
+		
+		return l;
+	}
+	
+	/**
 	 * this function returns the number of fixed neighbors
 	 * 
 	 * @param p
@@ -423,6 +487,80 @@ public class Grid {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Check if a piece is connected to the fixed pieces around
+	 * 
+	 * @param line
+	 * @param column
+	 * @return true if a connector of a piece is connected to a fixed pieces around
+	 */
+	public boolean isOriConnectedToFixed(Piece p, Orientation ori) {
+		p.setOrientation(ori.getValue());
+		
+		Piece tp = this.topPiece(p);
+		Piece rp = this.rightPiece(p);
+		Piece bp = this.bottomPiece(p);
+		Piece lp = this.leftPiece(p);
+		
+		if (tp == null) {
+			if (p.getConnectors().contains(Orientation.NORTH))
+				return false;
+		}
+		else {
+			if (tp.isFixed() && p.getConnectors().contains(Orientation.NORTH) != tp.getConnectors().contains(Orientation.SOUTH))
+				return false;
+		}
+		
+		if (rp == null) {
+			if (p.getConnectors().contains(Orientation.EAST))
+				return false;
+		}
+		else {
+			if (rp.isFixed() && p.getConnectors().contains(Orientation.EAST) != rp.getConnectors().contains(Orientation.WEST))
+				return false;
+		}
+		
+		if (bp == null) {
+			if (p.getConnectors().contains(Orientation.SOUTH))
+				return false;
+		}
+		else {
+			if (bp.isFixed() && p.getConnectors().contains(Orientation.SOUTH) != bp.getConnectors().contains(Orientation.NORTH))
+				return false;
+		}
+			
+		if (lp == null) {
+			if (p.getConnectors().contains(Orientation.WEST))
+				return false;
+		}
+		else {
+			if (lp.isFixed() && p.getConnectors().contains(Orientation.WEST) != lp.getConnectors().contains(Orientation.EAST))
+				return false;
+		}
+
+		return true;
+	}
+	
+	/**
+	 * Check if a piece is totally connected to the fixed pieces around
+	 * 
+	 * @param line
+	 * @param column
+	 * @return true if a connector of a piece is connected
+	 */
+	public ArrayList<Orientation> oriTotallyConnectedToFixed(Piece p) {
+		ArrayList<Orientation> oris = new ArrayList<Orientation>();
+		
+		for (int i=0; i<4; i++) {
+			Orientation ori = Orientation.getOrifromValue(i);
+			if (isOriConnectedToFixed(p, ori)) {
+				oris.add(ori);
+			}
+		}
+		
+		return oris;
 	}
 
 	/**
@@ -571,6 +709,35 @@ public class Grid {
 		return null;
 	}
 
+	public Piece leftPiece(Piece p) {
+		if (p.getPosX() > 0) {
+			return this.getPiece(p.getPosY(), p.getPosX()-1);
+		}
+		
+		return null;
+	}
+	
+	public Piece topPiece(Piece p) {
+		if (p.getPosY() > 0) {
+			return this.getPiece(p.getPosY() - 1, p.getPosX());
+		}
+		return null;
+	}
+	
+	public Piece rightPiece(Piece p) {
+		if (p.getPosX() < this.getWidth() - 1) {
+			return this.getPiece(p.getPosY(), p.getPosX() + 1);
+		}
+		return null;
+	}
+	
+	public Piece bottomPiece(Piece p) {
+		if (p.getPosY() < this.getHeight() - 1) {
+			return this.getPiece(p.getPosY() + 1, p.getPosX());
+		}
+		return null;
+	}
+	
 	@Override
 	public String toString() {
 
@@ -587,10 +754,11 @@ public class Grid {
 	public void writeGridFile (String file) {
 		try {
 		      FileWriter myWriter = new FileWriter(file);
-		      myWriter.write("" + width +"\n" + height + "\n");
+		      myWriter.write("" + width +"\n" + height);
 		      for (Piece[] ligne : this.getAllPieces()) {
 					for (Piece p : ligne) {
-						myWriter.write(p.getType().getValue() + "x" + p.getOrientation().getValue() +"\n" );
+						myWriter.write("\n");
+						myWriter.write(p.getType().getValue() + "x" + p.getOrientation().getValue());
 					}
 				}
 		      myWriter.close();
@@ -599,7 +767,4 @@ public class Grid {
 		      e.printStackTrace();
 		    }
 	}
-	
-	
-
 }

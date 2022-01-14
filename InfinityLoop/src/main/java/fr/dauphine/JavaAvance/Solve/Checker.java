@@ -2,12 +2,8 @@ package fr.dauphine.JavaAvance.Solve;
 
 
 
-import java.io.File;
-import java.util.Scanner;
-
 import fr.dauphine.JavaAvance.Components.Piece;
 import fr.dauphine.JavaAvance.GUI.Grid;
-
 
 public class Checker {
 
