@@ -139,7 +139,6 @@ public class Grid {
 			return true;
 		}
 		return false;
-
 	}
 
 	/**
