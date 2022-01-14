@@ -22,7 +22,12 @@ public class Grid {
 	private int nbcc = -1;
 	private Piece[][] pieces;
 	
-	//constructeur pour lire la grid d'un fichier 
+	
+	/**
+	 * Constructor to read the grid from a file
+	 * @param str
+	 * @throws FileNotFoundException
+	 */
 	public Grid(String str) throws FileNotFoundException {
 		File file = new File(str);
 	    Scanner sc = new Scanner(file);
@@ -54,6 +59,17 @@ public class Grid {
 	    
 	    sc.close();
 	}
+	
+	/**
+	 * Constructor that duplicates the grid passed as parameter 
+	 * @param g
+	 */
+	public Grid (Grid g) {
+		this.height = g.getHeight();
+		this.width = g.getWidth();
+		this.pieces = g.getAllPieces();
+		this.nbcc = g.getNbcc();
+	}
 
 	public Grid(int width, int height) {
 		this.width = width;
@@ -61,7 +77,14 @@ public class Grid {
 		initPieces();
 	}
 	
-	// Constructor with specified number of connected component
+	
+	/**f
+	 * Constructor with specified number of connected component
+	 * 
+	 * @param width
+	 * @param height
+	 * @param nbcc
+	 */
 	public Grid(int width, int height, int nbcc) {
 		this.width = width;
 		this.height = height;
@@ -74,6 +97,19 @@ public class Grid {
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
 				this.setPiece(i, j, new Piece(i, j));
+			}
+		}
+	}
+	
+	/**
+	 * Copy the grid passed as a parameter into this grid 
+	 * 
+	 * @param g
+	 */
+	public void copieGrid(Grid g) {
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				this.setPiece(g.getAllPieces()[i][j].getPosY(), g.getAllPieces()[i][j].getPosX(), g.getAllPieces()[i][j]);
 			}
 		}
 	}

@@ -35,6 +35,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/charl/OneDrive/Bureau/Charlotte/Dauphine/M1/S1/Java/Projet/commons-cli-1.5.0/commons-cli-1.5.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
