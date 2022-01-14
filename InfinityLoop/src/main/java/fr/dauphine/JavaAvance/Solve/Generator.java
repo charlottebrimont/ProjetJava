@@ -2,7 +2,6 @@ package fr.dauphine.JavaAvance.Solve;
 
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Random;
 
 import fr.dauphine.JavaAvance.Components.Orientation;
@@ -215,6 +214,8 @@ public class Generator {
 			for (int i = 0; i < rdInt; i++) {
 				p.turn();
 			}
+			
+			p = g.getNextPiece(p);
 		}
 	}
 }

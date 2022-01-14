@@ -22,32 +22,37 @@ public class Grid {
 	private int nbcc = -1;
 	private Piece[][] pieces;
 	
-	//constructeur pour lire la gride d'un fichier 
+	//constructeur pour lire la grid d'un fichier 
 	public Grid(String str) throws FileNotFoundException {
 		File file = new File(str);
 	    Scanner sc = new Scanner(file);
+	    
 	    String w = sc.next();
 	    width = Integer.parseInt(w);
 	    String h = sc.next();
 	    height = Integer.parseInt(h);
+	    
 	    pieces = new Piece[height][width];
 	    int i = 0;
 	    int j = 0;
+
 	    while (sc.hasNextLine()) {
 	    	String ligne = sc.next();
-	    	String[] ligneL =ligne.split("x");
-	    	int pieceType = Integer.parseInt(ligneL[0]);
-	    	int pieceOri = Integer.parseInt(ligneL[1]);
-	    	Piece p = new Piece(i, j, pieceType, pieceOri);
-	    	this.setPiece(i, j, p);
-	    	if (j<width) {
-	    		j++;
-	    	}
-	    	if (j == width) {
-	    		i++;
-	    		j = 0;
-	    	}	
-	  }
+		   	String[] ligneL = ligne.split("x");
+		   	int pieceType = Integer.parseInt(ligneL[0]);
+		   	int pieceOri = Integer.parseInt(ligneL[1]);
+		   	Piece p = new Piece(i, j, pieceType, pieceOri);
+		   	this.setPiece(i, j, p);
+		   	if (j<width) {
+		   		j++;
+		   	}
+		   	if (j == width) {
+		   		i++;
+		   		j = 0;
+		   	}
+	    }
+	    
+	    sc.close();
 	}
 
 	public Grid(int width, int height) {
@@ -55,7 +60,7 @@ public class Grid {
 		this.height = height;
 		initPieces();
 	}
-
+	
 	// Constructor with specified number of connected component
 	public Grid(int width, int height, int nbcc) {
 		this.width = width;
@@ -750,10 +755,11 @@ public class Grid {
 	public void writeGridFile (String file) {
 		try {
 		      FileWriter myWriter = new FileWriter(file);
-		      myWriter.write("" + width +"\n" + height + "\n");
+		      myWriter.write("" + width +"\n" + height);
 		      for (Piece[] ligne : this.getAllPieces()) {
 					for (Piece p : ligne) {
-						myWriter.write(p.getType().getValue() + "x" + p.getOrientation().getValue() +"\n" );
+						myWriter.write("\n");
+						myWriter.write(p.getType().getValue() + "x" + p.getOrientation().getValue());
 					}
 				}
 		      myWriter.close();
