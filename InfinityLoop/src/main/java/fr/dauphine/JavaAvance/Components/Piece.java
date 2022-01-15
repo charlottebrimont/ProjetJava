@@ -25,6 +25,20 @@ public class Piece {
 		this.isFixed = false; // Is there any orientation for the piece
 		this.possibleOrientations = type.getListOfPossibleOri();
 	}
+	
+	/**
+	 * Constructor that copies the Piece passed as a parameter 
+	 * @param p
+	 */
+	public Piece(Piece p) {
+		this.posX = p.getPosX();
+		this.posY = p.getPosY();
+		this.type = p.getType();
+		this.orientation = p.getOrientation();
+		this.connectors = p.getConnectors();
+		this.possibleOrientations = p.getPossibleOrientations();
+		this.isFixed = p.isFixed();
+	}
 
 	public Piece(int posY, int posX, PieceType type, Orientation orientation) {
 		this.posX = posX;

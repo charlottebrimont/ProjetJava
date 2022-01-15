@@ -67,7 +67,6 @@ public class GUI {
 
 		initialize(grid);
 	}
-
 	/**
 	 * Initialize the contents of the frame.
 	 * 
@@ -87,6 +86,7 @@ public class GUI {
 	 *            the piece
 	 * @return an image icon
 	 */
+	
 	private ImageIcon getImageIcon(Piece p) {
 		//To be implemented
 		
