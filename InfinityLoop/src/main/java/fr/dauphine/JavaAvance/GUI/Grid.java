@@ -607,6 +607,7 @@ public class Grid {
 			if (isOriConnectedToFixed(p, Orientation.EAST)) {
 				oris.add(Orientation.EAST);
 			}
+			return oris;
 		}
 		
 		for (int i = 0; i < 4; i++) {

@@ -57,7 +57,7 @@ class GeneratorTest {
 	}
 	
 	@Test
-	void possiblesOrientationsAccordingToFixed() {
+	void possiblesOrientationsAccordingToFixedLTYPE() {
 		Grid g = new Grid(3, 3);
 		Piece p1 = new Piece(0, 1, PieceType.ONECONN, Orientation.SOUTH);
 		p1.setFixed(true);
@@ -69,6 +69,38 @@ class GeneratorTest {
 		ArrayList<Orientation> res = new ArrayList<Orientation>();
 		res.add(Orientation.NORTH);
 		res.add(Orientation.WEST);
+		
+		assertEquals(res, g.oriTotallyConnectedToFixedGenerator(p));
+	}
+	
+	@Test
+	void possiblesOrientationsAccordingToFixedBAR() {
+		Grid g = new Grid(3, 3);
+		Piece p1 = new Piece(0, 1, PieceType.ONECONN, Orientation.SOUTH);
+		p1.setFixed(true);
+		g.setPiece(0, 1, p1);
+		
+		Piece p = new Piece(1, 1);
+		p.setType(PieceType.BAR);
+		
+		ArrayList<Orientation> res = new ArrayList<Orientation>();
+		res.add(Orientation.NORTH);
+		
+		assertEquals(res, g.oriTotallyConnectedToFixedGenerator(p));
+	}
+	
+	@Test
+	void possiblesOrientationsAccordingToFixedFOURCONN() {
+		Grid g = new Grid(3, 3);
+		Piece p1 = new Piece(0, 1, PieceType.ONECONN, Orientation.SOUTH);
+		p1.setFixed(true);
+		g.setPiece(0, 1, p1);
+		
+		Piece p = new Piece(1, 1);
+		p.setType(PieceType.FOURCONN);
+		
+		ArrayList<Orientation> res = new ArrayList<Orientation>();
+		res.add(Orientation.NORTH);
 		
 		assertEquals(res, g.oriTotallyConnectedToFixedGenerator(p));
 	}
