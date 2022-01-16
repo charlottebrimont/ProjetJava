@@ -67,8 +67,13 @@ public class Grid {
 	public Grid (Grid g) {
 		this.height = g.getHeight();
 		this.width = g.getWidth();
-		this.pieces = g.getAllPieces();
 		this.nbcc = g.getNbcc();
+		pieces = new Piece[height][width];
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				this.setPiece(g.getAllPieces()[i][j].getPosY(), g.getAllPieces()[i][j].getPosX(), g.getAllPieces()[i][j]);
+			}
+		}
 	}
 
 	public Grid(int width, int height) {
