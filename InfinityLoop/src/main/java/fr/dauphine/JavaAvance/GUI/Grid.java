@@ -592,19 +592,53 @@ public class Grid {
 	 * @param column
 	 * @return true if a connector of a piece is connected
 	 */
-	public ArrayList<Orientation> oriTotallyConnectedToFixed(Piece p) {
+	public ArrayList<Orientation> oriTotallyConnectedToFixedGenerator(Piece p) {
 		ArrayList<Orientation> oris = new ArrayList<Orientation>();
 		
-		for (int i=0; i<4; i++) {
+		if (p.getType() == PieceType.VOID || p.getType() == PieceType.FOURCONN) {
+			oris.add(Orientation.NORTH);
+			return oris;
+		}
+		
+		if (p.getType() == PieceType.BAR) {
+			if (isOriConnectedToFixed(p, Orientation.NORTH)) {
+				oris.add(Orientation.NORTH);
+			}
+			if (isOriConnectedToFixed(p, Orientation.EAST)) {
+				oris.add(Orientation.EAST);
+			}
+		}
+		
+		for (int i = 0; i < 4; i++) {
 			Orientation ori = Orientation.getOrifromValue(i);
+			if (isOriConnectedToFixed(p, ori)) {
+				oris.add(ori);
+			}
+		}	
+		
+		return oris;
+	}
+	
+	/**
+	 * Check if a piece is totally connected to the fixed pieces around
+	 * 
+	 * @param line
+	 * @param column
+	 * @return true if a connector of a piece is connected
+	 */
+	public ArrayList<Orientation> oriTotallyConnectedToFixedSolver(Piece p) {
+		ArrayList<Orientation> oris = new ArrayList<Orientation>();
+		
+		for (Orientation ori : p.getPossibleOrientations()) {
 			if (isOriConnectedToFixed(p, ori)) {
 				oris.add(ori);
 			}
 		}
 		
+		
 		return oris;
 	}
-
+	
 	/**
 	 * Check if a piece position is valid
 	 * 

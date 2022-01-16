@@ -70,6 +70,6 @@ class GeneratorTest {
 		res.add(Orientation.NORTH);
 		res.add(Orientation.WEST);
 		
-		assertEquals(res, g.oriTotallyConnectedToFixed(p));
+		assertEquals(res, g.oriTotallyConnectedToFixedGenerator(p));
 	}
 }
