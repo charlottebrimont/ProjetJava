@@ -71,7 +71,8 @@ public class Grid {
 		pieces = new Piece[height][width];
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
-				this.setPiece(g.getAllPieces()[i][j].getPosY(), g.getAllPieces()[i][j].getPosX(), g.getAllPieces()[i][j]);
+				Piece tempPi = new Piece(g.getAllPieces()[i][j]);
+				this.setPiece(g.getAllPieces()[i][j].getPosY(), g.getAllPieces()[i][j].getPosX(), tempPi);
 			}
 		}
 	}

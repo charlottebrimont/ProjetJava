@@ -39,7 +39,7 @@ public class Solver {
 		
 		solve("test2.txt", g);
 		
-		g = new Grid("test2.txt");
+		//g = new Grid("test2.txt");
 		
 		System.out.println("Check solve true : " + Checker.isSolution(g));
 		System.out.println(g);
@@ -156,32 +156,35 @@ public class Solver {
 				alea = wait.get(wait.size()-1).getNextPiece(alea);
 			}
 			if (alea == null) {
+				System.out.println("problem1");
 				return 1;
 			}
 			Grid tempG = new Grid(wait.get(wait.size()-1));
-			wait.remove(tempG);
+			wait.remove(wait.get(wait.size()-1));
 			for (Orientation ori : (tempG.oriTotallyConnectedToFixed(alea))) {   //ici c'est pas mal de caler le multithread 
-				tempG = new Grid(tempG);
+				Grid tempG1 = new Grid(tempG);
 				Piece tempP = new Piece(alea);
-				tempG.setPiece(alea.getPosY(), alea.getPosX(), tempP);
+				tempG1.setPiece(alea.getPosY(), alea.getPosX(), tempP);
 				tempP.setOrientation(ori.getValue());
 				tempP.setFixed(true);
-				if (solveWaiting(tempG) == 0) {
-					if(Checker.isSolution(tempG)) {
-						toSolveGrid.copieGrid(tempG);
+				if (solveWaiting(tempG1) == 0) {
+					if(Checker.isSolution(tempG1)) {
+						toSolveGrid = new Grid(tempG1); 
 						return 0;
 					}
 					else {
-						wait.add(tempG);
+						wait.add(tempG1);
 					}
 				}
 				
-				if (solveWaiting(tempG) == 1) {
-					System.out.println("problem");
-					return 1;
+				if (solveWaiting(tempG1) == 1) {
+					System.out.println("problem2");
+					//wait.add(tempG1);//enlever
+					//return 1;
 				}
 			}
 		}
+		System.out.println("problem3");
 		return 1;
 		/*
 		Piece
