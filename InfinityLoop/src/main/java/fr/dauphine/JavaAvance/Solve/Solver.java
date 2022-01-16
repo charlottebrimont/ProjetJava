@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import fr.dauphine.JavaAvance.Components.Orientation;
 import fr.dauphine.JavaAvance.Components.Piece;
 import fr.dauphine.JavaAvance.Components.PieceType;
-import fr.dauphine.JavaAvance.GUI.DisplayUnicode;
 import fr.dauphine.JavaAvance.GUI.Grid;
 
 public class Solver {
@@ -16,6 +15,7 @@ public class Solver {
 		
 		// To be implemented
 		try {
+
 		Grid g = new Grid(5, 7);
 		Generator.generateLevel("test1.txt", g);
 		g = new Grid("test1.txt");	
@@ -42,8 +42,10 @@ public class Solver {
 		//g = new Grid("test2.txt");
 		
 		System.out.println("Check solve true : " + Checker.isSolution(g));
+
 		System.out.println(g);
 		
+
 		} catch (FileNotFoundException e) {
 			System.err.println("Erreur : " + e);
 		}

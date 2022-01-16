@@ -18,6 +18,16 @@ public class Generator {
 
 	private static Grid filledGrid;
 	
+	public static Grid getGrid() {
+		return filledGrid;
+	}
+	
+	public static void setGrid(Grid inputGrid) {
+		filledGrid = new Grid(inputGrid);
+		
+	}
+	
+	
 	/**
 	 * @param output
 	 *            file name
