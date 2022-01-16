@@ -23,7 +23,8 @@ public class Generator {
 	}
 	
 	public static void setGrid(Grid inputGrid) {
-		filledGrid = new Grid(inputGrid.getWidth(), inputGrid.getHeight(), inputGrid.getNbcc());
+		filledGrid = new Grid(inputGrid);
+		
 	}
 	
 	
