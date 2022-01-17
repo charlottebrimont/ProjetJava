@@ -70,9 +70,7 @@ public class Solver {
 	}
 	*/
 	
-	public static int solveWaiting(Grid toSolveGrid) {
-		ArrayList<Piece> waiting = initWaiting(toSolveGrid);
-		
+	public static int solveWaiting(ArrayList<Piece> waiting, Grid toSolveGrid) {		
 		while (waiting.size() != 0) {
 			Piece cur = waiting.get(0);
 			waiting.remove(cur);
@@ -195,7 +193,7 @@ public class Solver {
 	}
 	*/
 	
-public static Grid solveAlea(Grid toSolveGrid) {
+/*public static Grid solveAlea(Grid toSolveGrid) {
 		
 		ArrayList<Grid> wait = new ArrayList<>();
 		Grid tempG = toSolveGrid;
@@ -235,7 +233,7 @@ public static Grid solveAlea(Grid toSolveGrid) {
 			}
 		}
 		return tempG;
-	}
+	}*/
 	
 	/*
 	public static int solveAlea(Grid toSolveGrid) {
