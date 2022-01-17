@@ -70,7 +70,7 @@ class GeneratorTest {
 		res.add(Orientation.NORTH);
 		res.add(Orientation.WEST);
 		
-		assertEquals(res, g.oriTotallyConnectedToFixedGenerator(p));
+		assertEquals(res, g.oriTotallyConnectedToFixed(p));
 	}
 	
 	@Test
@@ -86,7 +86,7 @@ class GeneratorTest {
 		ArrayList<Orientation> res = new ArrayList<Orientation>();
 		res.add(Orientation.NORTH);
 		
-		assertEquals(res, g.oriTotallyConnectedToFixedGenerator(p));
+		assertEquals(res, g.oriTotallyConnectedToFixed(p));
 	}
 	
 	@Test
@@ -102,7 +102,7 @@ class GeneratorTest {
 		ArrayList<Orientation> res = new ArrayList<Orientation>();
 		res.add(Orientation.NORTH);
 		
-		assertEquals(res, g.oriTotallyConnectedToFixedGenerator(p));
+		assertEquals(res, g.oriTotallyConnectedToFixed(p));
 	}
 	
 	@Test
@@ -118,6 +118,6 @@ class GeneratorTest {
 		ArrayList<Orientation> res = new ArrayList<Orientation>();
 		res.add(Orientation.NORTH);
 		
-		assertEquals(res, g.oriTotallyConnectedToFixedGenerator(p));
+		assertEquals(res, g.oriTotallyConnectedToFixed(p));
 	}
 }
