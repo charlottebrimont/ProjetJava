@@ -82,12 +82,14 @@ public class GUI {
 	 * 
 	 * @throws IOException
 	 */
+	/*
 	public GUI(Grid grid) {
 		this.icons = icons; //comment faire pour que ce soit le icons static ?
 		this.buttons = new JButton[grid.getHeight()][grid.getWidth()];
 		initialize(grid);
 		//Ou faut-il initialiser le Frame et le Panel ?
 	}
+	*/
 	
 	
 	
@@ -96,8 +98,9 @@ public class GUI {
 	 * 
 	 * @throws IOException
 	 */
-	/*
+	
 	private void initialize(Grid grid) {
+		
 		// To implement:
 		// creating frame, labels
 		// Implementing method mouse clicked of interface MouseListener.
@@ -144,7 +147,7 @@ public class GUI {
 			}
 		}
 		
-	}*/
+	}
 	
 	
 
