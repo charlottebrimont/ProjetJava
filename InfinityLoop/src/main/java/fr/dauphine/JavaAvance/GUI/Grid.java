@@ -83,7 +83,7 @@ public class Grid {
 	}
 	
 	
-	/**f
+	/** 
 	 * Constructor with specified number of connected component
 	 * 
 	 * @param width
