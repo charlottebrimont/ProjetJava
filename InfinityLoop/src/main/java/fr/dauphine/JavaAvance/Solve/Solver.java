@@ -8,29 +8,11 @@ import fr.dauphine.JavaAvance.GUI.Grid;
 
 public class Solver {
 	private static String fileName;
-
-	public static void main(String[] args) {
-		
-		// To be implemented
-		Grid g = new Grid(50, 50);
-		Generator.generateLevel("test1.txt", g);
-		g = new Grid("test1.txt");
-		
-		solve("test2.txt", g);
-		
-		g = new Grid("test2.txt");
-		System.out.println(g);
-	}
 	
 	public static void solve(String fileName, Grid toSolveGrid) {
 		Solver.fileName = fileName;
 		solveRec(initWaiting(toSolveGrid), toSolveGrid);
-		
-		toSolveGrid = new Grid(fileName);
-		if (Checker.isSolution(toSolveGrid))
-			return;
 	}
-
 	
 	public static int solveRec (ArrayList<Piece> waiting, Grid toSolveGrid) {
 		if (!Checker.isSolution(toSolveGrid)) {
@@ -54,7 +36,7 @@ public class Solver {
 		return 0;
 	}
 	
-	public static int solveWaiting(ArrayList<Piece> waiting, Grid toSolveGrid) {		
+	public static int solveWaiting(ArrayList<Piece> waiting, Grid toSolveGrid) {
 		while (waiting.size() != 0) {
 			Piece cur = waiting.get(0);
 			
@@ -143,7 +125,7 @@ public class Solver {
 		}
 		
 		for (Orientation ori : toSolveGrid.oriTotallyConnectedToFixed(alea)) {
-			Grid tempG = toSolveGrid.copyGridS();
+			Grid tempG = toSolveGrid.copyGrid();
 			Piece tempP = new Piece(tempG.getPiece(alea.getPosY(), alea.getPosX()));
 			tempP.setFixed(true);
 			tempP.setOrientation(ori.getValue());
@@ -168,7 +150,7 @@ public class Solver {
 			if (lp != null && !lp.isFixed() && !waiting.contains(lp))
 				waiting.add(lp);
 			
-			Grid tempG1 = tempG.copyGridS();
+			Grid tempG1 = tempG.copyGrid();
 			if (solveRec(waiting, tempG1) == 0) {
 				return 0;
 			}

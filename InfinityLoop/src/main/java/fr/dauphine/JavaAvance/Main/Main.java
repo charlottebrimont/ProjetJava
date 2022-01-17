@@ -26,8 +26,6 @@ public class Main {
 	private static Integer width = -1;
 	private static Integer height = -1;
 	private static Integer maxcc = -1;
-	private static Integer nbThread = 1;
-	private static Integer algo = 2;
 	
 	public static void main(String[] args) throws FileNotFoundException {
 		Options options = new Options();
@@ -41,6 +39,7 @@ public class Main {
         options.addOption("o", "output", true, "Store the generated or solved grid in <arg>. (Use only with --generate and --solve.)");
         options.addOption("t", "threads", true, "Maximum number of solver threads. (Use only with --solve.)");
         options.addOption("x", "nbcc", true, "Maximum number of connected components. (Use only with --generate.)");
+        options.addOption("p", "play", true, "Start a game and try solve it !");
         options.addOption("h", "help", false, "Display this help");
         
         try {
@@ -50,58 +49,72 @@ public class Main {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp( "phineloopgen", options );
             System.exit(1);
-        }       
-                
-    try{    
-        if( cmd.hasOption( "g" ) ) {
-            System.out.println("Running phineloop generator.");
-            String[] gridformat = cmd.getOptionValue( "g" ).split("x");
-            width = Integer.parseInt(gridformat[0]);
-            height = Integer.parseInt(gridformat[1]); 
-            if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");
-            
-            outputFile = cmd.getOptionValue( "o" );
-            Grid inputGrid = new Grid(height, width);
-            if (cmd.hasOption("x")) {
-            	String nbccstr = cmd.getOptionValue("x");
-            	inputGrid.setNbcc(Integer.parseInt(nbccstr));
-            }
-
-            Generator.generateLevel(outputFile, inputGrid);         
-        }
-        else if( cmd.hasOption( "s" ) ) {
-            System.out.println("Running phineloop solver.");
-            inputFile = cmd.getOptionValue( "s" );
-            if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");      
-            outputFile = cmd.getOptionValue( "o" );
-            boolean solved = false; 
-        
-            // load grid from inputFile, solve it and store result to outputFile...
-            // ...
-            
-            System.out.println("SOLVED: " + solved);            
         }
         
-        else if( cmd.hasOption( "c" )) {
-            System.out.println("Running phineloop checker.");
-            inputFile = cmd.getOptionValue( "c" );
-            boolean solved = false; 
-            Grid g = new Grid(inputFile);
-            solved = Checker.isSolution(g);
-            
-            // load grid from inputFile and check if it is solved... 
-            //...
-            System.out.println("SOLVED: " + solved);           
-        }
-        else {
-            throw new ParseException("You must specify at least one of the following options: -generate -check -solve ");           
-        }
+        try{
+        	if( cmd.hasOption( "g" ) ) {
+        		System.out.println("Running phineloop generator.");
+        		String[] gridformat = cmd.getOptionValue( "g" ).split("x");
+        		width = Integer.parseInt(gridformat[0]);
+        		height = Integer.parseInt(gridformat[1]);
+	            if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");
+	            
+	            outputFile = cmd.getOptionValue( "o" );
+	            
+	            if (cmd.hasOption("x")) {
+	            	String nbccstr = cmd.getOptionValue("x");
+	            	maxcc = Integer.parseInt(nbccstr);
+	            }
+	            Grid inputGrid = new Grid(height, width, maxcc);
+	
+	            Generator.generateLevel(outputFile, inputGrid);         
+	        }
+        	
+	        else if( cmd.hasOption( "s" ) ) {
+	            System.out.println("Running phineloop solver.");
+	            inputFile = cmd.getOptionValue( "s" );
+	            if(! cmd.hasOption("o")) throw new ParseException("Missing mandatory --output argument.");      
+	            outputFile = cmd.getOptionValue( "o" );
+	            
+	            Grid g = new Grid(inputFile);
+	            Solver.solve(outputFile, g);
+	            
+	            try {
+	            	g = new Grid(outputFile);
+	            	if (!Checker.isSolution(g) ) {
+	            		System.out.println("SOLVED: " + false);
+	            	}
+	            } catch (NullPointerException e) {
+	            	System.out.println("SOLVED: " + false);
+	            }
+	        }
+        
+	        else if( cmd.hasOption( "c" )) {
+	            System.out.println("Running phineloop checker.");
+	            inputFile = cmd.getOptionValue( "c" );
+	            boolean solved = false; 
+	            Grid g = new Grid(inputFile);
+	            solved = Checker.isSolution(g);
+	            
+	            System.out.println("SOLVED: " + solved);           
+	        }
+        	
+	        else if( cmd.hasOption( "p" )) {
+	        	System.out.println("Running phineloop play.");
+	            inputFile = cmd.getOptionValue( "p" );
+	            
+	            GUI.initGUI(inputFile);
+	        }
+        	
+	        else {
+	            throw new ParseException("You must specify at least one of the following options: -generate -check -solve ");           
+	        }
         } catch (ParseException e) {
-            System.err.println("Error parsing commandline : " + e.getMessage());
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp( "phineloopgen", options );         
-            System.exit(1); // exit with error      
-    }
+        	System.err.println("Error parsing commandline : " + e.getMessage());
+        	HelpFormatter formatter = new HelpFormatter();
+        	formatter.printHelp( "phineloopgen", options );         
+        	System.exit(1); // exit with error      
+        }
         System.exit(0); // exit with success                            
     }
 	

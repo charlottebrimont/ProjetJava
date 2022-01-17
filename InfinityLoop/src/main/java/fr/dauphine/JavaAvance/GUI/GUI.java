@@ -36,13 +36,13 @@ import fr.dauphine.JavaAvance.Solve.Generator;
  */
 public class GUI {
 
-	private static String fileName = "GUI.txt";
+	private static String fileName;
 	private JFrame frame = new JFrame("InfinityLoop");
 	private JPanel panel = new JPanel();
 	private static ArrayList<ImageIcon> icons;
 	private JButton[][] buttons;
 	
-	static {
+	public static void changeIcons() {
 		icons = new ArrayList<ImageIcon>();
 		String pathToIcons = "src/main/resources/fr/dauphine/JavaAvance/icons/io/";
 		for (int i = 1 ; i < 16 ; i++) {
@@ -50,14 +50,20 @@ public class GUI {
 		}
 	}
 	
-	public static void main(String[] args) {
+	//public static void main(String[] args) {
 		
-		Grid g = new Grid(3, 3);
+		/*Grid g = new Grid(15, 15);
 		Generator.generateLevel(fileName, g);
-		//g = new Grid(fileName);
+		g = new Grid(fileName);
 		
-		//System.out.println(g);
+		System.out.println(g);*/
+		//initGUI("test.txt");
+	//}*/
+	
+	public static void initGUI(String inputFile) {
 		
+		
+		fileName = inputFile;
 		startGUI(fileName);
 	}
 	
@@ -69,33 +75,27 @@ public class GUI {
 	 * @throws IOException
 	 *             if there is a problem with the gui
 	 */
-	public static void startGUI(final String inputFile) throws NullPointerException {
+	public static void startGUI(final String inputFile) {
+		changeIcons();
 		// We have to check that the grid is generated before to launch the GUI
 		// construction
 		Runnable task = new Runnable() {
 			public void run() {
-
-				try {
-					final Grid grid = Checker.buildGrid(inputFile); //Pourquoi cr�er cette fonction dans Checker et ne pas simplement utilsier le constructeur Grid(String)??
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							GUI window;
-							window = new GUI(grid);
-							window.frame.setSize(grid.getHeight()*50, grid.getWidth()*50);
-							window.panel.setLayout(new GridLayout(grid.getHeight(), grid.getWidth()));
-							window.frame.add(window.panel);
-							window.frame.setVisible(true);
-							
-						}
-					});
-				} catch (IOException e) {
-					throw new NullPointerException("Error with input file");
-				}
-
+				
+				final Grid grid = Checker.buildGrid(inputFile);
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						GUI window;
+						window = new GUI(grid);
+						window.frame.setSize(grid.getHeight()*50, grid.getWidth()*50);
+						window.panel.setLayout(new GridLayout(grid.getHeight(), grid.getWidth()));
+						window.frame.add(window.panel);
+						window.frame.setVisible(true);
+					}
+				});
 			}
 		};
 		new Thread(task).start();
-
 	}
 
 	
@@ -107,6 +107,7 @@ public class GUI {
 	 */
 	
 	public GUI(Grid grid) {
+		
 		//comment faire pour que ce soit le icons static ?
 		this.buttons = new JButton[grid.getHeight()][grid.getWidth()];
 		initialize(grid);
@@ -209,8 +210,8 @@ public class GUI {
 	
 	private static void buildFile(String string, JButton[][] buttons2) { //Change name / And everything else
 		Charset charset = Charset.forName("US-ASCII");
-		Path path = FileSystems.getDefault().getPath(string);
-		try (BufferedWriter output = Files.newBufferedWriter(path, charset)){
+		Path p = FileSystems.getDefault().getPath(string);
+		try (BufferedWriter output = Files.newBufferedWriter(p, charset)){
 			String text = "" + buttons2[0].length + "\n" + buttons2.length + "\n" ;
 			
 			for (JButton[] listbuttons : buttons2) {

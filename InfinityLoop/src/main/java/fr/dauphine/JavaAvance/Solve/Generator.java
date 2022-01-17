@@ -24,7 +24,6 @@ public class Generator {
 	
 	public static void setGrid(Grid inputGrid) {
 		filledGrid = new Grid(inputGrid);
-		
 	}
 	
 	

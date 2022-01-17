@@ -43,7 +43,7 @@ public class Checker {
 	 * @param g
 	 * @return
 	 */
-	public static Grid buildGrid(String inputFile) throws FileNotFoundException {
+	public static Grid buildGrid(String inputFile) {
 		Grid grid = new Grid(inputFile);
 		return grid;
 	}

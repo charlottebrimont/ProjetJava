@@ -117,10 +117,11 @@ public class Grid {
 	}
 	
 	/**
-	 * Makes a copy of the grid by generating a new grid
-	 * @return
+	 * Generate a grid and copy the grid passed as a parameter into this grid 
+	 * 
+	 * @param g
 	 */
-	public Grid copyGridS() {
+	public Grid copyGrid() {
         Grid copy = new Grid(this.getWidth(),this.getHeight());
         for (int i = 0; i < this.getHeight(); i++) {
             for (int j=0; j < this.getWidth(); j++) {
@@ -128,43 +129,13 @@ public class Grid {
                 PieceType type = current.getType();
                 Orientation ori = current.getOrientation();
                 Piece pcopy = new Piece(i,j,type,ori);
-                //pcopy.setPossibleOrientations(new ArrayList<>(current.getPossibleOrientations()));
                 if (current.isFixed()) pcopy.setFixed(true);
                 copy.setPiece(i,j,pcopy);
             }
         }
 
         return copy;
-
     }
-	
-	
-
-	
-	public void copyGrid (Grid g) {
-		this.height = g.getHeight();
-		this.width = g.getWidth();
-		this.nbcc = g.getNbcc();
-		pieces = new Piece[height][width];
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				this.setPiece(i, j, g.getPiece(i, j));
-			}
-		}
-	}
-	
-	/**
-	 * Copy the grid passed as a parameter into this grid 
-	 * 
-	 * @param g
-	 */
-	public void copieGrid(Grid g) {
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				this.setPiece(g.getAllPieces()[i][j].getPosY(), g.getAllPieces()[i][j].getPosX(), g.getAllPieces()[i][j]);
-			}
-		}
-	}
 
 	public int getWidth() {
 		return width;
