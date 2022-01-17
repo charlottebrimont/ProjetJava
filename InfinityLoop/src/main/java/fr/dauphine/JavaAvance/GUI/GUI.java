@@ -36,6 +36,7 @@ import fr.dauphine.JavaAvance.Solve.Generator;
  */
 public class GUI {
 
+	private static String fileName = "GUI.txt";
 	private JFrame frame = new JFrame("InfinityLoop");
 	private JPanel panel = new JPanel();
 	private static ArrayList<ImageIcon> icons;
@@ -52,12 +53,12 @@ public class GUI {
 	public static void main(String[] args) {
 		
 		Grid g = new Grid(5, 5);
-		Generator.generateLevel("testGUI.txt", g);
-		g = new Grid("testGUI.txt");
+		Generator.generateLevel(fileName, g);
+		g = new Grid(fileName);
 		
 		System.out.println(g);
 		
-		startGUI("testGUI.txt");
+		startGUI(fileName);
 	}
 	
 
@@ -75,7 +76,7 @@ public class GUI {
 			public void run() {
 
 				try {
-					final Grid grid = Checker.buildGrid(inputFile); //Pourquoi créer cette fonction dans Checker et ne pas simplement utilsier le constructeur Grid(String)??
+					final Grid grid = Checker.buildGrid(inputFile); //Pourquoi crï¿½er cette fonction dans Checker et ne pas simplement utilsier le constructeur Grid(String)??
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							GUI window;
@@ -158,10 +159,11 @@ public class GUI {
 							button.setIcon( icons.get(icons.indexOf(button.getIcon()) + 1));
 						}
 						
-						buildFile("checkFile.txt", buttons);
+						buildFile("testGUI.txt", buttons);
 						try {
-							if (Checker.isSolution("checkFile.txt"))								//que faire ?????
-								System.out.println("Gagné.");
+							if (Checker.isSolution("testGUI.txt")) {								//que faire ?????
+								System.out.println("Gagnï¿½.");
+							}
 						} catch (FileNotFoundException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -223,25 +225,27 @@ public class GUI {
 			for (JButton[] listbuttons : buttons2) {
 				for (JButton button : listbuttons) {
 					String tmp = null;
-					if (button.getIcon() == null) {tmp = "0 0";}
-					else if (button.getIcon() == icons.get(0)) {tmp = "1 0";} //ONECONN
-					else if (button.getIcon() == icons.get(1)) {tmp = "1 1";} //ONECONN
-					else if (button.getIcon() == icons.get(2)) {tmp = "1 2";} //ONECONN
-					else if (button.getIcon() == icons.get(3)) {tmp = "1 3";} //ONECONN
-					else if (button.getIcon() == icons.get(4)) {tmp = "2 0";} //BAR
-					else if (button.getIcon() == icons.get(5)) {tmp = "2 1";} //BAR
-					else if (button.getIcon() == icons.get(6)) {tmp = "3 0";} //TTYPE
-					else if (button.getIcon() == icons.get(7)) {tmp = "3 1";} //TTYPE
-					else if (button.getIcon() == icons.get(8)) {tmp = "3 2";} //TTYPE
-					else if (button.getIcon() == icons.get(9)) {tmp = "3 3";} //TTYPE
-					else if (button.getIcon() == icons.get(10)) {tmp = "4 0";} //FOURCONN
-					else if (button.getIcon() == icons.get(11)) {tmp = "5 0";} //LTYPE
-					else if (button.getIcon() == icons.get(12)) {tmp = "5 1";} //LTYPE
-					else if (button.getIcon() == icons.get(13)) {tmp = "5 2";} //LTYPE
-					else if (button.getIcon() == icons.get(14)) {tmp = "5 3";} //LTYPE
-					
+					if (button.getIcon() == null) {tmp = "0x0";}
+					else if (button.getIcon() == icons.get(0)) {tmp = "1x0";} //ONECONN
+					else if (button.getIcon() == icons.get(1)) {tmp = "1x1";} //ONECONN
+					else if (button.getIcon() == icons.get(2)) {tmp = "1x2";} //ONECONN
+					else if (button.getIcon() == icons.get(3)) {tmp = "1x3";} //ONECONN
+					else if (button.getIcon() == icons.get(4)) {tmp = "2x0";} //BAR
+					else if (button.getIcon() == icons.get(5)) {tmp = "2x1";} //BAR
+					else if (button.getIcon() == icons.get(6)) {tmp = "3x0";} //TTYPE
+					else if (button.getIcon() == icons.get(7)) {tmp = "3x1";} //TTYPE
+					else if (button.getIcon() == icons.get(8)) {tmp = "3x2";} //TTYPE
+					else if (button.getIcon() == icons.get(9)) {tmp = "3x3";} //TTYPE
+					else if (button.getIcon() == icons.get(10)) {tmp = "4x0";} //FOURCONN
+					else if (button.getIcon() == icons.get(11)) {tmp = "5x0";} //LTYPE
+					else if (button.getIcon() == icons.get(12)) {tmp = "5x1";} //LTYPE
+					else if (button.getIcon() == icons.get(13)) {tmp = "5x2";} //LTYPE
+					else if (button.getIcon() == icons.get(14)) {tmp = "5x3";} //LTYPE
+					text += tmp + "\n";
 				}
 			}
+			text = text.substring(0, text.length() - 1);
+			output.write(text, 0, text.length());
 		}
 		catch (IOException e) {
 			System.out.println("Erreur fichier");
