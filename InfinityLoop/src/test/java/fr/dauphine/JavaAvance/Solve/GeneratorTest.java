@@ -104,4 +104,20 @@ class GeneratorTest {
 		
 		assertEquals(res, g.oriTotallyConnectedToFixedGenerator(p));
 	}
+	
+	@Test
+	void possiblesOrientationsAccordingToFixedONECONN() {
+		Grid g = new Grid(3, 3);
+		Piece p1 = new Piece(0, 1, PieceType.TTYPE, Orientation.SOUTH);
+		p1.setFixed(true);
+		g.setPiece(0, 1, p1);
+		
+		Piece p = new Piece(1, 1);
+		p.setType(PieceType.ONECONN);
+		
+		ArrayList<Orientation> res = new ArrayList<Orientation>();
+		res.add(Orientation.NORTH);
+		
+		assertEquals(res, g.oriTotallyConnectedToFixedGenerator(p));
+	}
 }

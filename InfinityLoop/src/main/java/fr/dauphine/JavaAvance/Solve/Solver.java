@@ -13,13 +13,22 @@ public class Solver {
 		
 		// To be implemented
 		try {
-			Grid g = new Grid(5, 7, 3);
+			
+			Grid save = new Grid("save.txt");
+			save.writeGridFile("save.txt");
+			System.out.println(Checker.isSolution(save));
+			
+			
+			Grid g = new Grid(25, 25);
 			Generator.generateLevel("test1.txt", g);
+			
 			g = new Grid("test1.txt");
 			
 			solve("test2.txt", g);
-			System.out.println("Check solve true : " + Checker.isSolution(g));
+
+			System.out.println(initWaiting(g));
 			System.out.println(g);
+			
 		} catch (FileNotFoundException e) {
 			System.err.println("Erreur : " + e);
 		}
@@ -36,7 +45,7 @@ public class Solver {
 				if (solveAlea(toSolveGrid) == 1) {
 					System.out.println("SOLVED : false (2)");		//pas sur de l'endroit ou afficher ca... (je veux dire sur le terminal)
 					return;
-				}			
+				}
 			}
 		}
 		
@@ -55,10 +64,8 @@ public class Solver {
 			
 			cur.setPossibleOrientations(possibleOrientations); 
 			
-			if (possibleOrientations.size() == 0) {
+			if (possibleOrientations.size() == 0)
 				return 1;
-			}
-			
 			
 			if (possibleOrientations.size() == 1) {
 				cur.setOrientation(possibleOrientations.get(0).getValue());
@@ -81,9 +88,6 @@ public class Solver {
 				if (lp != null && !lp.isFixed() && !waiting.contains(lp))
 					waiting.add(lp);
 			}
-			
-			
-			
 		}
 		return 0;
 	}
@@ -96,11 +100,13 @@ public class Solver {
 				Piece cur = toSolveGrid.getPiece(i, j);
 				
 				ArrayList<Orientation> possibleOrientations = toSolveGrid.oriTotallyConnectedToFixedSolver(cur);
-				cur.setPossibleOrientations(possibleOrientations);
+				cur.setPossibleOrientations(possibleOrientations);	
 				
 				if (cur.isFixed() || possibleOrientations.size() == 1) {
-					cur.setOrientation(possibleOrientations.get(0).getValue());
-					cur.setFixed(true);
+					if (!cur.isFixed()) {
+						cur.setOrientation(possibleOrientations.get(0).getValue());
+						cur.setFixed(true);
+					}
 					
 					waiting.remove(cur);
 					
@@ -128,45 +134,49 @@ public class Solver {
 	}
 
 	public static int solveAlea(Grid toSolveGrid) {
-		ArrayList<Grid> wait = new ArrayList<Grid>();
-		wait.add(toSolveGrid);
+		Piece alea = toSolveGrid.getPiece(0, 0);
+		while (alea != null && alea.isFixed()) {
+			alea = toSolveGrid.getNextPiece(alea);
+		}
 		
-		while(!wait.isEmpty()) {
-			Grid tempG = new Grid(wait.get(wait.size()-1));
-			wait.remove(wait.get(wait.size()-1));
+		if (alea == null) {
+			return 1;
+		}
+		
+		Grid tempG = new Grid(toSolveGrid);
+		
+		while (!Checker.isSolution(tempG)) {
+			ArrayList<Orientation> possibleOrientations = toSolveGrid.oriTotallyConnectedToFixedSolver(alea);
+			alea.setPossibleOrientations(possibleOrientations);
 			
-			Piece alea = tempG.getPiece(0, 0);
-			
-			while (alea != null && alea.isFixed()) {
-				alea = tempG.getNextPiece(alea);
-			}
-			if (alea == null) {
-				return 1;
-			}
-			
-			for (Orientation ori : (tempG.oriTotallyConnectedToFixedSolver(alea))) {   //ici c'est pas mal de caler le multithread 
-				Grid tempG1 = new Grid(tempG);
+			for (Orientation ori : possibleOrientations) {				
+				tempG = new Grid(toSolveGrid);
 				Piece tempP = new Piece(alea);
 				
 				tempP.setOrientation(ori.getValue());
 				tempP.setFixed(true);
-				tempG1.setPiece(tempP.getPosY(), tempP.getPosX(), tempP);
+				tempG.setPiece(tempP.getPosY(), tempP.getPosX(), tempP);
 				
-				if (solveWaiting(tempG1) == 0) {
-					if (Checker.isSolution(tempG1)) {
-						toSolveGrid = new Grid(tempG1); 
-						return 0;
-					}
-					else {
-						wait.add(tempG1);
-					}
-				}
+				if (solveWaiting(tempG) == 1)
+					return 1;
 				
-				else {
+				else
+					solveAlea(tempG);
+			}
+			
+			do {
+				alea = toSolveGrid.getNextPiece(alea);
+				if (alea == null || alea.getPossibleOrientations().size() == 0) {
+					System.out.println("ICI");
 					return 1;
 				}
 			}
+			while (alea.isFixed());
+			
+
 		}
-		return 1;
+		
+		toSolveGrid.copyGrid(tempG);
+		return 0;
 	}
 }

@@ -71,8 +71,7 @@ public class Grid {
 		pieces = new Piece[height][width];
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
-				Piece tempPi = new Piece(g.getAllPieces()[i][j]);
-				this.setPiece(g.getAllPieces()[i][j].getPosY(), g.getAllPieces()[i][j].getPosX(), tempPi);
+				this.setPiece(i, j, g.getPiece(i, j));
 			}
 		}
 	}
@@ -103,6 +102,18 @@ public class Grid {
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
 				this.setPiece(i, j, new Piece(i, j));
+			}
+		}
+	}
+	
+	public void copyGrid (Grid g) {
+		this.height = g.getHeight();
+		this.width = g.getWidth();
+		this.nbcc = g.getNbcc();
+		pieces = new Piece[height][width];
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				this.setPiece(i, j, g.getPiece(i, j));
 			}
 		}
 	}
@@ -596,7 +607,9 @@ public class Grid {
 		ArrayList<Orientation> oris = new ArrayList<Orientation>();
 		
 		if (p.getType() == PieceType.VOID || p.getType() == PieceType.FOURCONN) {
-			oris.add(Orientation.NORTH);
+			if (isOriConnectedToFixed(p, Orientation.NORTH)) {
+				oris.add(Orientation.NORTH);
+			}
 			return oris;
 		}
 		
