@@ -33,11 +33,15 @@ public class Grid {
 			File file = new File(str);
 			Scanner sc;
 			sc = new Scanner(file);
-			String w = sc.next();
-		    width = Integer.parseInt(w);
-		    String h = sc.next();
-		    height = Integer.parseInt(h);
-		    
+			if (sc.hasNext()) {
+				String w = sc.next();
+				width = Integer.parseInt(w);
+			}
+			if (sc.hasNext()) {
+				 String h = sc.next();
+				 height = Integer.parseInt(h);
+			}
+			
 		    pieces = new Piece[height][width];
 		    int i = 0;
 		    int j = 0;
