@@ -72,11 +72,15 @@ public class Main {
 	            Generator.generateLevel(outputFile, inputGrid);  
 	            
 	            if( cmd.hasOption( "p" )) {
-		        	System.out.println("Running phineloop play.");
+		        	
 		        	String playstr = cmd.getOptionValue( "p" );
 		        	play = Integer.parseInt(playstr);
-		        	if (play != -1) {
+		        	if (play == 0) {
+		        		System.out.println("Running phineloop play.");
 		        		GUI.startGUI(outputFile);
+		        	}
+		        	else {
+		        		System.out.println("commande -p " + play + " ne permet pas de jouer. Rentrez la valeur -p 0 pour jouer.");
 		        	}
 		        }
 	        }

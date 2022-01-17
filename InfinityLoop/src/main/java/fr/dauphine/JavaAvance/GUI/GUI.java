@@ -136,10 +136,9 @@ public class GUI {
 							button.setIcon( icons.get(icons.indexOf(button.getIcon()) + 1));
 						}
 						
-						//grid.getPiece(fi, fj).turn();
 						getGridFromButtons(grid);
 						if (Checker.isSolution(grid))
-							System.out.println("Gagne");
+							System.out.println("Grid solved !");
 					}
 				});
 				button.setIcon(this.getImageIcon(grid.getPiece(i, j)));
