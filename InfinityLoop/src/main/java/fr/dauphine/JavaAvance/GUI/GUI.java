@@ -6,7 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.ImageIcon;
@@ -29,8 +34,8 @@ import fr.dauphine.JavaAvance.Solve.Checker;
  */
 public class GUI {
 
+	private JFrame frame = new JFrame("InfinityLoop");
 	private JPanel panel = new JPanel();
-	private JFrame frame;
 	private static ArrayList<ImageIcon> icons;
 	private JButton[][] buttons;
 	
@@ -57,12 +62,14 @@ public class GUI {
 			public void run() {
 
 				try {
-					Grid grid = Checker.buildGrid(inputFile); //Pourquoi créer cette fonction dans Checker ??
+					Grid grid = Checker.buildGrid(inputFile); //Pourquoi créer cette fonction dans Checker et ne pas simplement utilsier le constructeur Grid(String)??
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							GUI window;
 							window = new GUI(grid);
+							window.frame.setSize(grid.getHeight()*50, grid.getWidth()*50);
 							window.frame.setVisible(true);
+							
 						}
 					});
 				} catch (IOException e) {
@@ -82,14 +89,14 @@ public class GUI {
 	 * 
 	 * @throws IOException
 	 */
-	/*
+	
 	public GUI(Grid grid) {
-		this.icons = icons; //comment faire pour que ce soit le icons static ?
+		//comment faire pour que ce soit le icons static ?
 		this.buttons = new JButton[grid.getHeight()][grid.getWidth()];
 		initialize(grid);
 		//Ou faut-il initialiser le Frame et le Panel ?
 	}
-	*/
+	
 	
 	
 	
@@ -136,8 +143,9 @@ public class GUI {
 							button.setIcon( icons.get(icons.indexOf(button.getIcon()) + 1));
 						}
 						
-						//buildFile("checkFile.txt", buttons);
-						//if ... 									//que faire ?????
+						buildFile("checkFile.txt", buttons);
+						//if (Checker.isSolved("checkFile.txt")) //VOUS AVEZ GAGNE								//que faire ?????
+							//System.out.println("Gagné.");
 					}
 				});
 				button.setIcon(this.getImageIcon(grid.getPiece(i, j)));
@@ -186,8 +194,38 @@ public class GUI {
 	}
 	
 	
-	private static void buildFile() { //Change name / 
-		
+	private static void buildFile(String string, JButton[][] buttons2) { //Change name / And everything else
+		Charset charset = Charset.forName("US-ASCII");
+		Path p = FileSystems.getDefault().getPath(string);
+		try (BufferedWriter output = Files.newBufferedWriter(p, charset)){
+			String text = "" + buttons2[0].length + "\n" + buttons2.length + "\n" ;
+			
+			for (JButton[] listbuttons : buttons2) {
+				for (JButton button : listbuttons) {
+					String tmp = null;
+					if (button.getIcon() == null) {tmp = "0 0";}
+					else if (button.getIcon() == icons.get(1)) {tmp = "1 0";} //ONECONN
+					else if (button.getIcon() == icons.get(2)) {tmp = "1 1";} //ONECONN
+					else if (button.getIcon() == icons.get(3)) {tmp = "1 2";} //ONECONN
+					else if (button.getIcon() == icons.get(4)) {tmp = "1 3";} //ONECONN
+					else if (button.getIcon() == icons.get(5)) {tmp = "2 0";} //BAR
+					else if (button.getIcon() == icons.get(6)) {tmp = "2 1";} //BAR
+					else if (button.getIcon() == icons.get(7)) {tmp = "3 0";} //TTYPE
+					else if (button.getIcon() == icons.get(8)) {tmp = "3 1";} //TTYPE
+					else if (button.getIcon() == icons.get(9)) {tmp = "3 2";} //TTYPE
+					else if (button.getIcon() == icons.get(10)) {tmp = "3 3";} //TTYPE
+					else if (button.getIcon() == icons.get(11)) {tmp = "4 0";} //FOURCONN
+					else if (button.getIcon() == icons.get(12)) {tmp = "5 0";} //LTYPE
+					else if (button.getIcon() == icons.get(13)) {tmp = "5 1";} //LTYPE
+					else if (button.getIcon() == icons.get(14)) {tmp = "5 2";} //LTYPE
+					else if (button.getIcon() == icons.get(15)) {tmp = "5 3";} //LTYPE
+					
+				}
+			}
+		}
+		catch (IOException e) {
+			System.out.println("Erreur fichier");
+		}
 	}
 
 }
