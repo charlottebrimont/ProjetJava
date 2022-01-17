@@ -42,6 +42,28 @@ public class Solver {
 		System.out.println("SOVLED : false");
 	}
 	
+	public static int solveRec (ArrayList<Piece> waiting, Grid toSolveGrid) {
+		if (!Checker.isSolution(toSolveGrid)) {
+			if (solveWaiting(waiting, toSolveGrid) == 1) 
+				return 1;
+			
+			if (Checker.isSolution(toSolveGrid)) {
+				System.out.println("SOLVED : true");
+				toSolveGrid.writeGridFile(fileName);
+				return 0;
+			}
+			
+			if (solveAlea(toSolveGrid) == 0) {
+				return 0;
+			}
+			return 1;
+			
+		}
+		System.out.println("SOLVED : true");
+		toSolveGrid.writeGridFile(fileName);
+		return 0;
+	}
+	
 	public static int solveWaiting(ArrayList<Piece> waiting, Grid toSolveGrid) {		
 		while (waiting.size() != 0) {
 			Piece cur = waiting.get(0);
@@ -120,28 +142,6 @@ public class Solver {
 		return waiting;
 	}
 
-	public static int solveRec (ArrayList<Piece> waiting, Grid toSolveGrid) {
-		if (!Checker.isSolution(toSolveGrid)) {
-			if (solveWaiting(waiting, toSolveGrid) == 1) 
-				return 1;
-			
-			if (Checker.isSolution(toSolveGrid)) {
-				System.out.println("SOLVED : true");
-				toSolveGrid.writeGridFile(fileName);
-				return 0;
-			}
-			
-			if (solveAlea(toSolveGrid) == 0) {
-				return 0;
-			}
-			return 1;
-			
-		}
-		System.out.println("SOLVED : true");
-		toSolveGrid.writeGridFile(fileName);
-		return 0;
-	}
-	
 	public static int solveAlea(Grid toSolveGrid) {
 		Piece alea = toSolveGrid.getPiece(0, 0);
 		
