@@ -20,6 +20,11 @@ public class Checker {
 		return true;
 	}
 	
+	public static boolean isSolution(String gridfile) throws FileNotFoundException {
+		Grid grid = new Grid(gridfile);
+		return isSolution(grid);
+	}
+	
 	public static Grid buildGrid(String inputFile) throws FileNotFoundException {
 		Grid grid = new Grid(inputFile);
 		return grid;

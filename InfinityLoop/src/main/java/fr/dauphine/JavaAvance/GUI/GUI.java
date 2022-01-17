@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
@@ -26,6 +27,7 @@ import fr.dauphine.JavaAvance.Components.Orientation;
 import fr.dauphine.JavaAvance.Components.Piece;
 import fr.dauphine.JavaAvance.Components.PieceType;
 import fr.dauphine.JavaAvance.Solve.Checker;
+import fr.dauphine.JavaAvance.Solve.Generator;
 
 /**
  * This class handles the GUI
@@ -47,6 +49,22 @@ public class GUI {
 		}
 	}
 	
+	public static void main(String[] args) {
+		
+		try {
+			Grid g = new Grid(5, 5);
+			Generator.generateLevel("testGUI.txt", g);
+			g = new Grid("testGUI.txt");
+			
+			System.out.println(g);
+			
+			startGUI("testGUI.txt");
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
 
 	/**
 	 * 
@@ -55,19 +73,21 @@ public class GUI {
 	 * @throws IOException
 	 *             if there is a problem with the gui
 	 */
-	public static void startGUI(String inputFile) throws NullPointerException {
+	public static void startGUI(final String inputFile) throws NullPointerException {
 		// We have to check that the grid is generated before to launch the GUI
 		// construction
 		Runnable task = new Runnable() {
 			public void run() {
 
 				try {
-					Grid grid = Checker.buildGrid(inputFile); //Pourquoi créer cette fonction dans Checker et ne pas simplement utilsier le constructeur Grid(String)??
+					final Grid grid = Checker.buildGrid(inputFile); //Pourquoi créer cette fonction dans Checker et ne pas simplement utilsier le constructeur Grid(String)??
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							GUI window;
 							window = new GUI(grid);
 							window.frame.setSize(grid.getHeight()*50, grid.getWidth()*50);
+							window.panel.setLayout(new GridLayout(grid.getHeight(), grid.getWidth()));
+							window.frame.add(window.panel);
 							window.frame.setVisible(true);
 							
 						}
@@ -124,28 +144,33 @@ public class GUI {
 						if(button.getIcon() == null) {
 							return; 	//remplacer le return ???
 						}
-						else if (button.getIcon() == icons.get(4)) { //ONECONN
-							button.setIcon(icons.get(1));
+						else if (button.getIcon() == icons.get(3)) { //ONECONN
+							button.setIcon(icons.get(0));
 						}
-						else if (button.getIcon() == icons.get(6)) { //BAR
-							button.setIcon(icons.get(5));
+						else if (button.getIcon() == icons.get(5)) { //BAR
+							button.setIcon(icons.get(4));
 						}
-						else if (button.getIcon() == icons.get(10)) { //TTYPE
-							button.setIcon(icons.get(7));
+						else if (button.getIcon() == icons.get(9)) { //TTYPE
+							button.setIcon(icons.get(6));
 						}
-						else if (button.getIcon() == icons.get(11)) { //FOURCONN
+						else if (button.getIcon() == icons.get(10)) { //FOURCONN
 							return; 	//remplacer le return ???
 						}
-						else if (button.getIcon() == icons.get(15)) { //LTYPE
-							button.setIcon(icons.get(12));
+						else if (button.getIcon() == icons.get(14)) { //LTYPE
+							button.setIcon(icons.get(11));
 						}
 						else {
 							button.setIcon( icons.get(icons.indexOf(button.getIcon()) + 1));
 						}
 						
 						buildFile("checkFile.txt", buttons);
-						//if (Checker.isSolved("checkFile.txt")) //VOUS AVEZ GAGNE								//que faire ?????
-							//System.out.println("Gagné.");
+						try {
+							if (Checker.isSolution("checkFile.txt"))								//que faire ?????
+								System.out.println("Gagné.");
+						} catch (FileNotFoundException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
 				});
 				button.setIcon(this.getImageIcon(grid.getPiece(i, j)));
@@ -178,15 +203,15 @@ public class GUI {
 		case VOID :
 			return null;					//VOID(0) : 
 		case ONECONN :
-			return icons.get(1 + pOri); 	//ONECONN(1) : 1, 2, 3 et 4
+			return icons.get(0 + pOri); 	//ONECONN(1) : 1, 2, 3 et 4
 		case BAR :
-			return icons.get(5 + pOri); 	//BAR(2) : 5 et 6
+			return icons.get(4 + pOri); 	//BAR(2) : 5 et 6
 		case TTYPE :
-			return icons.get(7 + pOri); 	//TTYPE(3) : 7, 8, 9 et 10
+			return icons.get(6 + pOri); 	//TTYPE(3) : 7, 8, 9 et 10
 		case FOURCONN :
-			return icons.get(11 + pOri); 	//FOURCONN(4) : 11
+			return icons.get(10 + pOri); 	//FOURCONN(4) : 11
 		case LTYPE :
-			return icons.get(12 + pOri); 	//LTYPE(5) : 12, 13, 14 et 15
+			return icons.get(11 + pOri); 	//LTYPE(5) : 12, 13, 14 et 15
 		default :
 			throw new IllegalArgumentException();
 		}
@@ -204,21 +229,21 @@ public class GUI {
 				for (JButton button : listbuttons) {
 					String tmp = null;
 					if (button.getIcon() == null) {tmp = "0 0";}
-					else if (button.getIcon() == icons.get(1)) {tmp = "1 0";} //ONECONN
-					else if (button.getIcon() == icons.get(2)) {tmp = "1 1";} //ONECONN
-					else if (button.getIcon() == icons.get(3)) {tmp = "1 2";} //ONECONN
-					else if (button.getIcon() == icons.get(4)) {tmp = "1 3";} //ONECONN
-					else if (button.getIcon() == icons.get(5)) {tmp = "2 0";} //BAR
-					else if (button.getIcon() == icons.get(6)) {tmp = "2 1";} //BAR
-					else if (button.getIcon() == icons.get(7)) {tmp = "3 0";} //TTYPE
-					else if (button.getIcon() == icons.get(8)) {tmp = "3 1";} //TTYPE
-					else if (button.getIcon() == icons.get(9)) {tmp = "3 2";} //TTYPE
-					else if (button.getIcon() == icons.get(10)) {tmp = "3 3";} //TTYPE
-					else if (button.getIcon() == icons.get(11)) {tmp = "4 0";} //FOURCONN
-					else if (button.getIcon() == icons.get(12)) {tmp = "5 0";} //LTYPE
-					else if (button.getIcon() == icons.get(13)) {tmp = "5 1";} //LTYPE
-					else if (button.getIcon() == icons.get(14)) {tmp = "5 2";} //LTYPE
-					else if (button.getIcon() == icons.get(15)) {tmp = "5 3";} //LTYPE
+					else if (button.getIcon() == icons.get(0)) {tmp = "1 0";} //ONECONN
+					else if (button.getIcon() == icons.get(1)) {tmp = "1 1";} //ONECONN
+					else if (button.getIcon() == icons.get(2)) {tmp = "1 2";} //ONECONN
+					else if (button.getIcon() == icons.get(3)) {tmp = "1 3";} //ONECONN
+					else if (button.getIcon() == icons.get(4)) {tmp = "2 0";} //BAR
+					else if (button.getIcon() == icons.get(5)) {tmp = "2 1";} //BAR
+					else if (button.getIcon() == icons.get(6)) {tmp = "3 0";} //TTYPE
+					else if (button.getIcon() == icons.get(7)) {tmp = "3 1";} //TTYPE
+					else if (button.getIcon() == icons.get(8)) {tmp = "3 2";} //TTYPE
+					else if (button.getIcon() == icons.get(9)) {tmp = "3 3";} //TTYPE
+					else if (button.getIcon() == icons.get(10)) {tmp = "4 0";} //FOURCONN
+					else if (button.getIcon() == icons.get(11)) {tmp = "5 0";} //LTYPE
+					else if (button.getIcon() == icons.get(12)) {tmp = "5 1";} //LTYPE
+					else if (button.getIcon() == icons.get(13)) {tmp = "5 2";} //LTYPE
+					else if (button.getIcon() == icons.get(14)) {tmp = "5 3";} //LTYPE
 					
 				}
 			}
