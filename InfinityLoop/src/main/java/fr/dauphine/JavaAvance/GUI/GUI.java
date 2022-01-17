@@ -51,18 +51,13 @@ public class GUI {
 	
 	public static void main(String[] args) {
 		
-		try {
-			Grid g = new Grid(5, 5);
-			Generator.generateLevel("testGUI.txt", g);
-			g = new Grid("testGUI.txt");
-			
-			System.out.println(g);
-			
-			startGUI("testGUI.txt");
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		Grid g = new Grid(5, 5);
+		Generator.generateLevel("testGUI.txt", g);
+		g = new Grid("testGUI.txt");
+		
+		System.out.println(g);
+		
+		startGUI("testGUI.txt");
 	}
 	
 

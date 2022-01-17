@@ -1,11 +1,9 @@
 package fr.dauphine.JavaAvance.Solve;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import fr.dauphine.JavaAvance.Components.Orientation;
 import fr.dauphine.JavaAvance.Components.Piece;
-import fr.dauphine.JavaAvance.Components.PieceType;
 import fr.dauphine.JavaAvance.GUI.Grid;
 
 public class Solver {
@@ -14,33 +12,25 @@ public class Solver {
 	public static void main(String[] args) {
 		
 		// To be implemented
-		try {
-			Grid g = new Grid(50, 50);
-			Generator.generateLevel("test1.txt", g);
-			g = new Grid("test1.txt");
-			
-			solve("test2.txt", g);
-			
-			g = new Grid("test2.txt");
-			System.out.println(g);
-		} catch (FileNotFoundException e) {
-			System.err.println("Erreur : " + e);
-		}
+		Grid g = new Grid(50, 50);
+		Generator.generateLevel("test1.txt", g);
+		g = new Grid("test1.txt");
+		
+		solve("test2.txt", g);
+		
+		g = new Grid("test2.txt");
+		System.out.println(g);
 	}
 	
 	public static void solve(String fileName, Grid toSolveGrid) {
 		Solver.fileName = fileName;
 		solveRec(initWaiting(toSolveGrid), toSolveGrid);
 		
-		try {
-			toSolveGrid = new Grid(fileName);
-			if (Checker.isSolution(toSolveGrid)) {
-				return;
-			}
-		} catch (FileNotFoundException e) {}
-		
-		System.out.println("SOVLED : false");
+		toSolveGrid = new Grid(fileName);
+		if (Checker.isSolution(toSolveGrid))
+			return;
 	}
+
 	
 	public static int solveRec (ArrayList<Piece> waiting, Grid toSolveGrid) {
 		if (!Checker.isSolution(toSolveGrid)) {

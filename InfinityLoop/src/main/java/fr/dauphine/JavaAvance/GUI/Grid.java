@@ -28,36 +28,42 @@ public class Grid {
 	 * @param str
 	 * @throws FileNotFoundException
 	 */
-	public Grid(String str) throws FileNotFoundException {
-		File file = new File(str);
-	    Scanner sc = new Scanner(file);
+	public Grid(String str) {
+		try {
+			File file = new File(str);
+			Scanner sc;
+			sc = new Scanner(file);
+			String w = sc.next();
+		    width = Integer.parseInt(w);
+		    String h = sc.next();
+		    height = Integer.parseInt(h);
+		    
+		    pieces = new Piece[height][width];
+		    int i = 0;
+		    int j = 0;
+	
+		    while (sc.hasNextLine()) {
+		    	String ligne = sc.next();
+			   	String[] ligneL = ligne.split("x");
+			   	int pieceType = Integer.parseInt(ligneL[0]);
+			   	int pieceOri = Integer.parseInt(ligneL[1]);
+			   	Piece p = new Piece(i, j, pieceType, pieceOri);
+			   	this.setPiece(i, j, p);
+			   	if (j<width) {
+			   		j++;
+			   	}
+			   	if (j == width) {
+			   		i++;
+			   		j = 0;
+			   	}
+		    }
+		    
+		    sc.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("Erreur : " + e);
+		}
 	    
-	    String w = sc.next();
-	    width = Integer.parseInt(w);
-	    String h = sc.next();
-	    height = Integer.parseInt(h);
-	    
-	    pieces = new Piece[height][width];
-	    int i = 0;
-	    int j = 0;
 
-	    while (sc.hasNextLine()) {
-	    	String ligne = sc.next();
-		   	String[] ligneL = ligne.split("x");
-		   	int pieceType = Integer.parseInt(ligneL[0]);
-		   	int pieceOri = Integer.parseInt(ligneL[1]);
-		   	Piece p = new Piece(i, j, pieceType, pieceOri);
-		   	this.setPiece(i, j, p);
-		   	if (j<width) {
-		   		j++;
-		   	}
-		   	if (j == width) {
-		   		i++;
-		   		j = 0;
-		   	}
-	    }
-	    
-	    sc.close();
 	}
 	
 	/**
@@ -83,7 +89,7 @@ public class Grid {
 	}
 	
 	
-	/**f
+	/** 
 	 * Constructor with specified number of connected component
 	 * 
 	 * @param width
