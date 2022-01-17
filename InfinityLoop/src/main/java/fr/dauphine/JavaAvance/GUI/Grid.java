@@ -514,6 +514,7 @@ public class Grid {
 			return true;
 		try {
 			for (Orientation oppConnector : this.getPiece(oppPieceY, oppPieceX).getConnectors()) {
+				
 				if (oppConnector == ori.getOpposedOrientation()) {
 					return true;
 				}
