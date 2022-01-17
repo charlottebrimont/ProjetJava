@@ -34,9 +34,9 @@ public class Piece {
 		this.posX = p.getPosX();
 		this.posY = p.getPosY();
 		this.type = p.getType();
-		this.orientation = p.getOrientation();
+		this.orientation = type.getOrientation(p.getOrientation());
 		this.connectors = p.getConnectors();
-		this.possibleOrientations = p.getPossibleOrientations();
+		this.possibleOrientations = new ArrayList(p.getPossibleOrientations());
 		this.isFixed = p.isFixed();
 	}
 
@@ -61,11 +61,11 @@ public class Piece {
 	}
 
 	public void setPossibleOrientations(ArrayList<Orientation> possibleOrientations) {
-		this.possibleOrientations = possibleOrientations;
+		this.possibleOrientations = new ArrayList<>(possibleOrientations);
 	}
 
 	public ArrayList<Orientation> getPossibleOrientations() {
-		return this.possibleOrientations;
+		return new ArrayList<>(this.possibleOrientations);
 	}
 
 	public LinkedList<Orientation> getInvPossibleOrientation() {
@@ -73,7 +73,7 @@ public class Piece {
 		for (Orientation ori : this.getPossibleOrientations()) {
 			invPossibleOrientations.addFirst(ori);
 		}
-		return invPossibleOrientations;
+		return new LinkedList<>(invPossibleOrientations);
 	}
 
 	public void deleteFromPossibleOrientation(Orientation ori) {
@@ -124,7 +124,7 @@ public class Piece {
 	}
 
 	public LinkedList<Orientation> getConnectors() {
-		return connectors;
+		return new LinkedList<>(connectors);
 	}
 
 	public boolean hasTopConnector() {

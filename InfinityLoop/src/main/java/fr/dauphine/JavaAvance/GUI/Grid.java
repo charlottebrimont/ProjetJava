@@ -106,6 +106,27 @@ public class Grid {
 		}
 	}
 	
+	public Grid copyGridS() {
+        Grid copy = new Grid(this.getWidth(),this.getHeight());
+        for (int i = 0; i < this.getHeight(); i++) {
+            for (int j=0; j < this.getWidth(); j++) {
+                Piece current = this.getPiece(i, j);
+                PieceType type = current.getType();
+                Orientation ori = current.getOrientation();
+                Piece pcopy = new Piece(i,j,type,ori);
+                //pcopy.setPossibleOrientations(new ArrayList<>(current.getPossibleOrientations()));
+                if (current.isFixed()) pcopy.setFixed(true);
+                copy.setPiece(i,j,pcopy);
+            }
+        }
+
+        return copy;
+
+    }
+	
+	
+
+	
 	public void copyGrid (Grid g) {
 		this.height = g.getHeight();
 		this.width = g.getWidth();
