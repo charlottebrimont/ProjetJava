@@ -26,6 +26,7 @@ public class Main {
 	private static Integer width = -1;
 	private static Integer height = -1;
 	private static Integer maxcc = -1;
+	private static Integer play = -1;
 	
 	public static void main(String[] args) throws FileNotFoundException {
 		Options options = new Options();
@@ -39,7 +40,7 @@ public class Main {
         options.addOption("o", "output", true, "Store the generated or solved grid in <arg>. (Use only with --generate and --solve.)");
         options.addOption("t", "threads", true, "Maximum number of solver threads. (Use only with --solve.)");
         options.addOption("x", "nbcc", true, "Maximum number of connected components. (Use only with --generate.)");
-        options.addOption("p", "play", true, "Start a game and try solve it !");
+        options.addOption("p", "play", true, "Start a game and try to solve it !");
         options.addOption("h", "help", false, "Display this help");
         
         try {
@@ -53,6 +54,7 @@ public class Main {
         
         try{
         	if( cmd.hasOption( "g" ) ) {
+        		
         		System.out.println("Running phineloop generator.");
         		String[] gridformat = cmd.getOptionValue( "g" ).split("x");
         		width = Integer.parseInt(gridformat[0]);
@@ -67,7 +69,16 @@ public class Main {
 	            }
 	            Grid inputGrid = new Grid(height, width, maxcc);
 	
-	            Generator.generateLevel(outputFile, inputGrid);         
+	            Generator.generateLevel(outputFile, inputGrid);  
+	            
+	            if( cmd.hasOption( "p" )) {
+		        	System.out.println("Running phineloop play.");
+		        	String playstr = cmd.getOptionValue( "p" );
+		        	play = Integer.parseInt(playstr);
+		        	if (play != -1) {
+		        		GUI.startGUI(outputFile);
+		        	}
+		        }
 	        }
         	
 	        else if( cmd.hasOption( "s" ) ) {
@@ -99,13 +110,14 @@ public class Main {
 	            System.out.println("SOLVED: " + solved);           
 	        }
         	
+        	/*
 	        else if( cmd.hasOption( "p" )) {
 	        	System.out.println("Running phineloop play.");
 	            inputFile = cmd.getOptionValue( "p" );
 	            
-	            GUI.initGUI(inputFile);
+	            GUI.startGUI(inputFile);
 	        }
-        	
+        	*/
 	        else {
 	            throw new ParseException("You must specify at least one of the following options: -generate -check -solve ");           
 	        }
@@ -115,7 +127,7 @@ public class Main {
         	formatter.printHelp( "phineloopgen", options );         
         	System.exit(1); // exit with error      
         }
-        System.exit(0); // exit with success                            
+        //System.exit(0); // exit with success                            
     }
 	
 }

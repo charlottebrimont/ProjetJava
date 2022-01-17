@@ -15,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Random;
+
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -50,22 +52,7 @@ public class GUI {
 		}
 	}
 	
-	//public static void main(String[] args) {
-		
-		/*Grid g = new Grid(15, 15);
-		Generator.generateLevel(fileName, g);
-		g = new Grid(fileName);
-		
-		System.out.println(g);*/
-		//initGUI("test.txt");
-	//}*/
-	
-	public static void initGUI(String inputFile) {
-		
-		
-		fileName = inputFile;
-		startGUI(fileName);
-	}
+
 	
 
 	/**
@@ -105,13 +92,9 @@ public class GUI {
 	 * 
 	 * @throws IOException
 	 */
-	
 	public GUI(Grid grid) {
-		
-		//comment faire pour que ce soit le icons static ?
 		this.buttons = new JButton[grid.getHeight()][grid.getWidth()];
 		initialize(grid);
-		//Ou faut-il initialiser le Frame et le Panel ?
 	}
 	
 	
@@ -122,19 +105,17 @@ public class GUI {
 	 * 
 	 * @throws IOException
 	 */
-	private void initialize(Grid grid) {
+	private void initialize(final Grid grid) {
 		
-		final JButton[][] buttons = this.buttons ; //mettre final ?
+		final JButton[][] buttons = this.buttons ; 
 		for(int i = 0 ; i < grid.getHeight() ; i++) {
 			for(int j = 0 ; j < grid.getWidth() ; j++) {
-				final JButton button = new JButton(); //mettre final ?
-				
+				final JButton button = new JButton(); 
 				button.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
 						if(button.getIcon() == null) {
-							return; 	//remplacer le return ???
+							return;
 						}
 						else if (button.getIcon() == icons.get(3)) { //ONECONN
 							button.setIcon(icons.get(0));
@@ -146,7 +127,7 @@ public class GUI {
 							button.setIcon(icons.get(6));
 						}
 						else if (button.getIcon() == icons.get(10)) { //FOURCONN
-							return; 	//remplacer le return ???
+							return;
 						}
 						else if (button.getIcon() == icons.get(14)) { //LTYPE
 							button.setIcon(icons.get(11));
@@ -155,13 +136,10 @@ public class GUI {
 							button.setIcon( icons.get(icons.indexOf(button.getIcon()) + 1));
 						}
 						
-						buildFile("testGUI.txt", buttons);
-						try {
-							if (Checker.isSolution("testGUI.txt"))							//que faire ?????
-								System.out.println("Gagn�.");
-						} catch (FileNotFoundException e1) {
-							e1.printStackTrace();
-						}
+						//grid.getPiece(fi, fj).turn();
+						getGridFromButtons(grid);
+						if (Checker.isSolution(grid))
+							System.out.println("Gagne");
 					}
 				});
 				button.setIcon(this.getImageIcon(grid.getPiece(i, j)));
@@ -187,7 +165,7 @@ public class GUI {
 		 * SOUTH : 2
 		 * WEST : 3
 		 */
-		int pOri = p.getOrientation().getValue(); //pareil que getValuefromOri ?
+		int pOri = p.getOrientation().getValue();
 		switch(p.getType()) {
 		case VOID :
 			return null;					//VOID(0) : 
@@ -204,44 +182,50 @@ public class GUI {
 		default :
 			throw new IllegalArgumentException();
 		}
-		
 	}
 	
-	
-	private static void buildFile(String string, JButton[][] buttons2) { //Change name / And everything else
-		Charset charset = Charset.forName("US-ASCII");
-		Path p = FileSystems.getDefault().getPath(string);
-		try (BufferedWriter output = Files.newBufferedWriter(p, charset)){
-			String text = "" + buttons2[0].length + "\n" + buttons2.length + "\n" ;
-			
-			for (JButton[] listbuttons : buttons2) {
-				for (JButton button : listbuttons) {
-					String tmp = null;
-					if (button.getIcon() == null) {tmp = "0x0";}
-					else if (button.getIcon() == icons.get(0)) {tmp = "1x0";} //ONECONN
-					else if (button.getIcon() == icons.get(1)) {tmp = "1x1";} //ONECONN
-					else if (button.getIcon() == icons.get(2)) {tmp = "1x2";} //ONECONN
-					else if (button.getIcon() == icons.get(3)) {tmp = "1x3";} //ONECONN
-					else if (button.getIcon() == icons.get(4)) {tmp = "2x0";} //BAR
-					else if (button.getIcon() == icons.get(5)) {tmp = "2x1";} //BAR
-					else if (button.getIcon() == icons.get(6)) {tmp = "3x0";} //TTYPE
-					else if (button.getIcon() == icons.get(7)) {tmp = "3x1";} //TTYPE
-					else if (button.getIcon() == icons.get(8)) {tmp = "3x2";} //TTYPE
-					else if (button.getIcon() == icons.get(9)) {tmp = "3x3";} //TTYPE
-					else if (button.getIcon() == icons.get(10)) {tmp = "4x0";} //FOURCONN
-					else if (button.getIcon() == icons.get(11)) {tmp = "5x0";} //LTYPE
-					else if (button.getIcon() == icons.get(12)) {tmp = "5x1";} //LTYPE
-					else if (button.getIcon() == icons.get(13)) {tmp = "5x2";} //LTYPE
-					else if (button.getIcon() == icons.get(14)) {tmp = "5x3";} //LTYPE
-					text += tmp + "\n";
-				}
-			}
-			text = text.substring(0, text.length() - 1);
-			output.write(text, 0, text.length());
-		}
-		catch (IOException e) {
-			System.out.println("Erreur fichier");
-		}
+	 private void getGridFromButtons(Grid g) {
+	        for (int i = 0; i < g.getHeight(); i++) {
+	            for (int j = 0; j < g.getWidth(); j++) {
+	                g.setPiece(i, j, this.getPieceFromButton(i,j));
+	            }
+	        }
+	 }
+	    
+	private Piece getPieceFromButton(int i, int j) {
+	    JButton button = this.buttons[i][j];
+	    PieceType type = PieceType.VOID;
+	    Orientation ori = Orientation.NORTH;
+        Icon ic = button.getIcon();
+        int indice = icons.indexOf(ic) + 1;
+        int modulo = 0;
+        if (indice >= 1 && indice < 5) {
+            modulo = 1;
+            type = PieceType.ONECONN;
+        }
+        else if (indice >= 5 && indice < 7) {
+            modulo = 5;
+            type = PieceType.BAR;
+        }
+        else if (indice >= 7 && indice < 11) {
+            modulo = 7;
+            type = PieceType.TTYPE;
+        }
+        else if (indice >= 11 && indice < 12) {
+            modulo = 11;
+            type = PieceType.FOURCONN;
+        }
+        else if (indice >= 12 && indice < 16) {
+            modulo = 12;
+            type = PieceType.LTYPE;
+        }
+        else {
+        	modulo = 0;
+        }	
+        ori = Orientation.getOrifromValue(indice - modulo);
+	    
+	    return new Piece(i, j, type, ori);
 	}
+
 
 }
