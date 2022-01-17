@@ -182,7 +182,7 @@ public class Solver {
 				if (solveWaiting(tempG1) == 1) {
 					System.out.println("problem2");
 					//wait.add(tempG1);//enlever
-					return 1;
+					//return 1;
 				}
 			}
 		}
