@@ -121,12 +121,7 @@ public class GUI {
 	 * 
 	 * @throws IOException
 	 */
-	
 	private void initialize(Grid grid) {
-		
-		// To implement:
-		// creating frame, labels
-		// Implementing method mouse clicked of interface MouseListener.
 		
 		final JButton[][] buttons = this.buttons ; //mettre final ?
 		for(int i = 0 ; i < grid.getHeight() ; i++) {
@@ -161,11 +156,9 @@ public class GUI {
 						
 						buildFile("testGUI.txt", buttons);
 						try {
-							if (Checker.isSolution("testGUI.txt")) {								//que faire ?????
+							if (Checker.isSolution("testGUI.txt"))							//que faire ?????
 								System.out.println("Gagn�.");
-							}
 						} catch (FileNotFoundException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}
@@ -173,10 +166,8 @@ public class GUI {
 				button.setIcon(this.getImageIcon(grid.getPiece(i, j)));
 				this.buttons[i][j] = button;
 				this.panel.add(buttons[i][j]);
-				//Changer ces lignes ?????
 			}
 		}
-		
 	}
 	
 	
