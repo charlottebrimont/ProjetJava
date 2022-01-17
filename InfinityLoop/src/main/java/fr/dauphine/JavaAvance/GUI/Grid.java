@@ -116,6 +116,10 @@ public class Grid {
 		}
 	}
 	
+	/**
+	 * Makes a copy of the grid by generating a new grid
+	 * @return
+	 */
 	public Grid copyGridS() {
         Grid copy = new Grid(this.getWidth(),this.getHeight());
         for (int i = 0; i < this.getHeight(); i++) {
