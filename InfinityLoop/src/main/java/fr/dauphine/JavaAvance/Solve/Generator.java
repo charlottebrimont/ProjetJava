@@ -147,7 +147,7 @@ public class Generator {
 			boolean validType = false;
 			for (Orientation ori : p.getPossibleOrientations()) {
 				p.setOrientation(ori.getValue());
-				if (filledGrid.oriTotallyConnectedToFixed(p).size() != 0) {
+				if (filledGrid.oriTotallyConnectedToFixedGenerator(p).size() != 0) {
 					validType = true;
 				}
 			}
@@ -171,7 +171,7 @@ public class Generator {
 		
 		//We create a list of all the possible orientation for the random type
 		//We use the function to give us only the orientations that matches with all the fixed neighbours
-		ArrayList<Orientation> possibleOrientations = filledGrid.oriTotallyConnectedToFixed(p);
+		ArrayList<Orientation> possibleOrientations = filledGrid.oriTotallyConnectedToFixedGenerator(p);
 				
 		//We select randomly an orientation
 		rd = new Random();
