@@ -9,6 +9,13 @@ public enum Orientation {
 	/* Implement all the possible orientations and 
 	 *  required methods to rotate
 	 */
+	
+	/*
+	 * NORTH : 0
+	 * EAST : 1
+	 * SOUTH : 2
+	 * WEST : 3
+	 */
 
 	NORTH(0) {
 		@Override
