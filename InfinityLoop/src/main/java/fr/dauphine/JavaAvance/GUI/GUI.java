@@ -52,11 +52,11 @@ public class GUI {
 	
 	public static void main(String[] args) {
 		
-		Grid g = new Grid(5, 5);
+		Grid g = new Grid(3, 3);
 		Generator.generateLevel(fileName, g);
-		g = new Grid(fileName);
+		//g = new Grid(fileName);
 		
-		System.out.println(g);
+		//System.out.println(g);
 		
 		startGUI(fileName);
 	}
@@ -209,8 +209,8 @@ public class GUI {
 	
 	private static void buildFile(String string, JButton[][] buttons2) { //Change name / And everything else
 		Charset charset = Charset.forName("US-ASCII");
-		Path p = FileSystems.getDefault().getPath(string);
-		try (BufferedWriter output = Files.newBufferedWriter(p, charset)){
+		Path path = FileSystems.getDefault().getPath(string);
+		try (BufferedWriter output = Files.newBufferedWriter(path, charset)){
 			String text = "" + buttons2[0].length + "\n" + buttons2.length + "\n" ;
 			
 			for (JButton[] listbuttons : buttons2) {
